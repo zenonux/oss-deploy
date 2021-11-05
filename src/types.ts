@@ -5,7 +5,6 @@ export interface AliOssConfig {
   accessKeyId: string;
   accessKeySecret: string;
   bucket: string;
-  syncPrefix?: string;
   prefix?: (mode: ModeType, version: string) => string;
 }
 
