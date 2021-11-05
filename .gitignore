@@ -1,0 +1,7 @@
+node_modules/
+
+dist/
+.deploy.config.js
+deploy.version.json
+
+.DS_Store
