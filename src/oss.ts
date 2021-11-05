@@ -50,16 +50,16 @@ export default class AliOSS {
   private async getLocalFiles(dir: string) {
     const dirPath = path.resolve(dir);
     const files = await readdirp.promise(dirPath);
-    return files.map((val) => val.basename);
+    return files.map((val) => val.path);
   }
 
   private async uploadFiles(dir: string, files: string[]) {
     const spinner = ora(`Start sync assets...`).start();
     for await (const file of files) {
       try {
-        const relativePath = path.relative(dir, file);
-        const prefixPath = this.syncPrefix + "/" + relativePath;
-        await this.client.put(prefixPath.replace("\\", "/"), file);
+        const fullPath = path.resolve(dir, file);
+        const prefixPath = this.syncPrefix + "/" + file;
+        await this.client.put(prefixPath.replace("\\", "/"), fullPath);
       } catch (e: any) {
         spinner.fail();
         throw new Error(e);
@@ -76,7 +76,7 @@ export default class AliOSS {
       },
       {}
     );
-    return result.objects.map((val) => val.name);
+    return result.objects.map((val) => val.url);
   }
 
   async uploadAssets(prefix: string): Promise<void> {
