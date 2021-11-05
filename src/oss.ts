@@ -29,6 +29,18 @@ export default class AliOSS {
     // 过滤服务器上存在的文件
     const alreadyExitFiles = intersection(localFiles, remoteFiles);
     const newFiles = difference(localFiles, alreadyExitFiles);
+    const answer = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "release",
+        message: `confirm sync ${dir} to oss ${this.syncPrefix}?`,
+        default: false,
+      },
+    ]);
+    if (!answer.release) {
+      log.warn(`sync assets has been cancelled.`);
+      return;
+    }
     await this.uploadFiles(dir, newFiles);
     alreadyExitFiles.forEach((val) => {
       log.warn(`${val} is already in oss.`);
