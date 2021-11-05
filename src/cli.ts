@@ -17,7 +17,7 @@ program
   .description("sync assets between local and oss")
   .action(async (dir, opts) => {
     const config = await import(path.resolve(process.cwd(), opts.config));
-    const oss = new AliOSS(config);
+    const oss = new AliOSS(config.oss);
     await oss.sync(dir);
   });
 
