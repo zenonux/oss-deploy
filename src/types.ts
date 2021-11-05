@@ -1,11 +1,12 @@
 export type ModeType = "stag" | "prod";
 
-export interface AliOssConfig {
+export interface OssConfig {
   region: string;
   accessKeyId: string;
   accessKeySecret: string;
   bucket: string;
-  prefix?: (mode: ModeType, version: string) => string;
+  prefix?: string;
+  prefixGenerator?: (mode: ModeType, version: string) => string;
 }
 
 export interface VersionItem {

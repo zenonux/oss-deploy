@@ -4,16 +4,16 @@ import log from "./log";
 import path from "path";
 import readdirp from "readdirp";
 import inquirer from "inquirer";
-import { AliOssConfig, VersionItem } from "./types";
+import { OssConfig, VersionItem } from "./types";
 import { intersection, difference } from "lodash";
 
-export default class AliOSS {
+export default class Oss {
   private distPath: string;
-  private syncPrefix: string;
+  private prefix: string;
   private client;
-  constructor(config: AliOssConfig, distPath?: string) {
+  constructor(config: OssConfig, distPath?: string) {
     this.distPath = distPath || "";
-    this.syncPrefix = config.syncPrefix || "";
+    this.prefix = config.prefix || "";
     this.client = new OSS({
       region: config.region,
       accessKeyId: config.accessKeyId,
