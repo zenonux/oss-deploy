@@ -22,6 +22,7 @@ module.exports = {
     accessKeySecret: '',
     region: 'oss-cn-shanghai',
     bucket: 'test',
+    syncPrefix: 'test-assets',
     prefix: (mode, version) => {
       return mode + '@' + version
     },
