@@ -33,7 +33,7 @@ export default class Oss {
       {
         type: "confirm",
         name: "release",
-        message: `confirm sync ${dir} to oss ${this.syncPrefix}?`,
+        message: `confirm sync ${dir} to oss ${this.prefix}?`,
         default: false,
       },
     ]);
@@ -58,7 +58,7 @@ export default class Oss {
     for await (const file of files) {
       try {
         const fullPath = path.resolve(dir, file);
-        const prefixPath = this.syncPrefix + "/" + file;
+        const prefixPath = this.prefix + "/" + file;
         await this.client.put(prefixPath.replace("\\", "/"), fullPath);
       } catch (e: any) {
         spinner.fail();
@@ -71,7 +71,7 @@ export default class Oss {
   private async getAllFilesInOssDir() {
     const result = await this.client.list(
       {
-        prefix: this.syncPrefix,
+        prefix: this.prefix,
         "max-keys": 1000,
       },
       {}

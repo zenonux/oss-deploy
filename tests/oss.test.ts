@@ -1,5 +1,5 @@
 import Oss from "../src/oss";
-import config from "../.deploy.config.js";
+import config from "../.deploy.config";
 const ossClient = new Oss(config.oss);
 describe("oss tests", () => {
   test("sync assets", async () => {

@@ -75,7 +75,7 @@ package.json
 ```json
 {
   "scripts": {
-    "sync:assets": "oss-deploy sync assets -c ./.deploy.config.js"
+    "sync:assets": "oss-deploy sync ./assets -c ./.deploy.config.js"
   }
 }
 ```
