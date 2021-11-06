@@ -5,8 +5,7 @@ export interface OssConfig {
   accessKeyId: string;
   accessKeySecret: string;
   bucket: string;
-  prefix?: string;
-  prefixGenerator?: (mode: ModeType, version: string) => string;
+  prefix?: (mode: ModeType, version: string) => string;
 }
 
 export interface VersionItem {

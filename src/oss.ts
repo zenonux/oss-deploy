@@ -5,15 +5,13 @@ import path from "path";
 import readdirp from "readdirp";
 import inquirer from "inquirer";
 import { OssConfig, VersionItem } from "./types";
-import { intersection, difference } from "lodash";
+import { intersectionWith, difference } from "lodash";
 
 export default class Oss {
   private distPath: string;
-  private prefix: string;
   private client;
   constructor(config: OssConfig, distPath?: string) {
     this.distPath = distPath || "";
-    this.prefix = config.prefix || "";
     this.client = new OSS({
       region: config.region,
       accessKeyId: config.accessKeyId,
@@ -22,61 +20,72 @@ export default class Oss {
     });
   }
 
-  // sync local dir and oss syncPath
-  async sync(dir: string): Promise<void> {
-    const localFiles = await this.getLocalFiles(dir);
-    const remoteFiles = await this.getAllFilesInOssDir();
-    // 过滤服务器上存在的文件
-    const alreadyExitFiles = intersection(localFiles, remoteFiles);
-    const newFiles = difference(localFiles, alreadyExitFiles);
-    const answer = await inquirer.prompt([
-      {
-        type: "confirm",
-        name: "release",
-        message: `confirm sync ${dir} to oss ${this.prefix}?`,
-        default: false,
-      },
-    ]);
-    if (!answer.release) {
-      log.warn(`sync assets has been cancelled.`);
-      return;
-    }
-    await this.uploadFiles(dir, newFiles);
-    alreadyExitFiles.forEach((val) => {
-      log.warn(`${val} is already in oss.`);
-    });
+  private getTargetFilePath(filePath: string, prefix: string) {
+    return prefix.charAt(prefix.length - 1) === "/"
+      ? prefix + filePath
+      : prefix + "/" + filePath;
   }
 
-  private async getLocalFiles(dir: string) {
+  private async getLocalFilesPath(dir: string) {
     const dirPath = path.resolve(dir);
     const files = await readdirp.promise(dirPath);
     return files.map((val) => val.path);
   }
 
-  private async uploadFiles(dir: string, files: string[]) {
-    const spinner = ora(`Start sync assets...`).start();
-    for await (const file of files) {
-      try {
-        const fullPath = path.resolve(dir, file);
-        const prefixPath = this.prefix + "/" + file;
-        await this.client.put(prefixPath.replace("\\", "/"), fullPath);
-      } catch (e: any) {
-        spinner.fail();
-        throw new Error(e);
-      }
-    }
-    spinner.succeed(`sync assets succeed.`);
-  }
-
-  private async getAllFilesInOssDir() {
+  private async getFilesPathByPrefix(prefix: string) {
     const result = await this.client.list(
       {
-        prefix: this.prefix,
+        prefix: prefix,
         "max-keys": 1000,
       },
       {}
     );
-    return result.objects.map((val) => val.url);
+    return result.objects
+      ? result.objects.map((val) => val.url.split(".com/")[1])
+      : [];
+  }
+
+  async sync(dir: string, prefix: string): Promise<void> {
+    const localFilesPath = await this.getLocalFilesPath(dir);
+    const remoteFilesPath = await this.getFilesPathByPrefix(prefix);
+    // 过滤oss存在的文件
+    const alreadyExitFiles = intersectionWith(
+      localFilesPath,
+      remoteFilesPath,
+      (localFile, remoteFile) => {
+        return this.getTargetFilePath(localFile, prefix) === remoteFile;
+      }
+    );
+    const newFiles = difference(localFilesPath, alreadyExitFiles);
+    const answer = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "release",
+        message: `上传本地${dir}的文件至oss的${prefix}？`,
+        default: false,
+      },
+    ]);
+    if (!answer.release) {
+      log.warn(`取消上传本地${dir}的文件至oss的${prefix}！`);
+      return;
+    }
+    if (newFiles.length <= 0) {
+      log.warn("没有新文件需要上传至oss！");
+      return;
+    }
+    await this.uploadFiles(newFiles, dir, prefix);
+  }
+
+  private async uploadFiles(localFiles: string[], dir: string, prefix: string) {
+    for await (const file of localFiles) {
+      try {
+        const fullPath = path.resolve(dir, file);
+        await this.client.put(this.getTargetFilePath(file, prefix), fullPath);
+        log.success(`${fullPath}上传成功`);
+      } catch (e: any) {
+        throw new Error(e);
+      }
+    }
   }
 
   async uploadAssets(prefix: string): Promise<void> {

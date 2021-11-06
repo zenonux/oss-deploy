@@ -8,17 +8,17 @@ import path from "path";
 import AliOSS from "./oss";
 
 program
-  .command("sync <dir>")
+  .command("sync <dir> <prefix>")
   .requiredOption(
     "-c, --config <file>",
     "deploy config file",
     "./.deploy.config.js"
   )
   .description("sync assets between local and oss")
-  .action(async (dir, opts) => {
+  .action(async (dir, prefix, opts) => {
     const config = await import(path.resolve(process.cwd(), opts.config));
     const oss = new AliOSS(config.oss);
-    await oss.sync(dir);
+    await oss.sync(dir, prefix);
   });
 
 program
