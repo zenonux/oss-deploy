@@ -1,13 +1,13 @@
-import { AliOssConfig, VersionItem } from "./types";
-export default class AliOSS {
+import { OssConfig, VersionItem } from "./types";
+export default class Oss {
     private distPath;
-    private syncPrefix;
     private client;
-    constructor(config: AliOssConfig, distPath?: string);
-    sync(dir: string): Promise<void>;
-    private getLocalFiles;
+    constructor(config: OssConfig, distPath?: string);
+    private getTargetFilePath;
+    private getLocalFilesPath;
+    private getFilesPathByPrefix;
+    sync(dir: string, prefix: string): Promise<void>;
     private uploadFiles;
-    private getAllFilesInOssDir;
     uploadAssets(prefix: string): Promise<void>;
     handleDel(name: string): Promise<any>;
     deleteAssets(prefix: string): Promise<boolean>;

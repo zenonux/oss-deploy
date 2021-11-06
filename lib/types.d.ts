@@ -1,10 +1,9 @@
 export declare type ModeType = "stag" | "prod";
-export interface AliOssConfig {
+export interface OssConfig {
     region: string;
     accessKeyId: string;
     accessKeySecret: string;
     bucket: string;
-    syncPrefix?: string;
     prefix?: (mode: ModeType, version: string) => string;
 }
 export interface VersionItem {
@@ -21,7 +20,7 @@ export interface Config {
     distPath: string;
     jsonPath: string;
     maxVersionCountOfMode: number;
-    oss: AliOssConfig;
+    oss: OssConfig;
     stag: ServerConfig;
     prod: ServerConfig;
 }

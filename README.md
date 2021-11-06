@@ -20,7 +20,7 @@ module.exports = {
     accessKeySecret: '',
     region: 'oss-cn-shanghai',
     bucket: 'test',
-    prefixGenerator: (mode, version) => {
+    prefix: (mode, version) => {
       return mode + '@' + version
     },
   },
@@ -65,7 +65,6 @@ module.exports = {
     accessKeySecret: '',
     region: 'oss-cn-shanghai',
     bucket: 'test',
-    prefix: '',
   },
 }
 ```
@@ -75,7 +74,7 @@ package.json
 ```json
 {
   "scripts": {
-    "sync:assets": "oss-deploy sync ./assets -c ./.deploy.config.js"
+    "sync:assets": "oss-deploy sync ./assets remote-prefix/ -c ./.deploy.config.js"
   }
 }
 ```

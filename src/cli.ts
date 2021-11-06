@@ -5,7 +5,7 @@ import Aod from "./index";
 const program = new Command();
 import { getVersionFromPackage } from "./util";
 import path from "path";
-import AliOSS from "./oss";
+import Oss from "./oss";
 
 program
   .command("sync <dir> <prefix>")
@@ -14,10 +14,10 @@ program
     "deploy config file",
     "./.deploy.config.js"
   )
-  .description("sync assets between local and oss")
+  .description("同步本地文件至oss")
   .action(async (dir, prefix, opts) => {
     const config = await import(path.resolve(process.cwd(), opts.config));
-    const oss = new AliOSS(config.oss);
+    const oss = new Oss(config.oss);
     await oss.sync(dir, prefix);
   });
 

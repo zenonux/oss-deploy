@@ -24,7 +24,7 @@ export interface Config {
   distPath: string;
   jsonPath: string;
   maxVersionCountOfMode: number;
-  oss: AliOssConfig;
+  oss: OssConfig;
   stag: ServerConfig;
   prod: ServerConfig;
 }
