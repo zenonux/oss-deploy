@@ -21,7 +21,7 @@ program
       const version = await getVersionFromPackage();
       await client.uploadAssetsAndHtml(mode, version);
     } catch (e: any) {
-      console.error(e.message);
+      console.error(e);
     }
   });
 
@@ -39,7 +39,7 @@ program
       const client = new Aod(config);
       await client.clearAssets(mode);
     } catch (e: any) {
-      console.error(e.message);
+      console.error(e);
     }
   });
 

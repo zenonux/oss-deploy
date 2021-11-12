@@ -3,7 +3,6 @@ import { Client } from "ssh2";
 import ora from "ora";
 import { ServerConfig } from "./types";
 import { isFileExisted } from "./util";
-import { CustomException } from "./Exception";
 
 export default class Server {
   private distPath: string;
@@ -24,7 +23,7 @@ export default class Server {
       );
     } catch (e: any) {
       spinner.fail();
-      throw new CustomException(e);
+      throw e;
     }
   }
 

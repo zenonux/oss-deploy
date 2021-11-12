@@ -2,7 +2,6 @@ import jsonfile from "jsonfile";
 import ora from "ora";
 import { ModeType } from "./types";
 import * as fs from "fs";
-import { CustomException } from "./Exception";
 
 interface VersionItem {
   version: string;
@@ -16,19 +15,15 @@ export default class VersionManager {
   }
 
   private async writeJsonFile(data: VersionItem[], touchFile = false) {
-    try {
-      if (!touchFile) {
-        await fs.promises.chmod(this.jsonPath, 0o666);
-      }
-      await jsonfile.writeFile(this.jsonPath, data, {
-        mode: 0o666,
-        spaces: 2,
-        EOL: "\r\n",
-      });
-      await fs.promises.chmod(this.jsonPath, 0o444);
-    } catch (e: any) {
-      throw new CustomException(e);
+    if (!touchFile) {
+      await fs.promises.chmod(this.jsonPath, 0o666);
     }
+    await jsonfile.writeFile(this.jsonPath, data, {
+      mode: 0o666,
+      spaces: 2,
+      EOL: "\r\n",
+    });
+    await fs.promises.chmod(this.jsonPath, 0o444);
   }
 
   async getJsonFile(): Promise<VersionItem[]> {
@@ -40,29 +35,19 @@ export default class VersionManager {
       await this.writeJsonFile([], true);
       return [];
     }
-    try {
-      const list: VersionItem[] = await jsonfile.readFile(this.jsonPath);
-      return list;
-    } catch (e: any) {
-      throw new CustomException(e);
-    }
+    const list: VersionItem[] = await jsonfile.readFile(this.jsonPath);
+    return list;
   }
 
   async checkHasVersion(prefix: string): Promise<boolean> {
-    try {
-      const list: VersionItem[] = await this.getJsonFile();
-      return list.some((val) => val.version === prefix);
-    } catch (e: any) {
-      throw new CustomException(e);
-    }
+    const list: VersionItem[] = await this.getJsonFile();
+    return list.some((val) => val.version === prefix);
   }
 
   async addVersion(prefix: string): Promise<string> {
     const isHasVersion = await this.checkHasVersion(prefix);
     if (isHasVersion) {
-      throw new CustomException(
-        `${prefix} has been uploaded already,please check your version!`
-      );
+      throw `${prefix} has been uploaded already,please check your version!`;
     }
     const spinner = ora(`Start writing json file...`).start();
     try {
@@ -75,8 +60,8 @@ export default class VersionManager {
       spinner.succeed("Write version in json file successfully.");
       return prefix;
     } catch (e: any) {
-      spinner.fail();
-      throw new CustomException(e);
+      spinner.fail(e);
+      throw e;
     }
   }
 

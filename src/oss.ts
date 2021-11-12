@@ -4,7 +4,6 @@ import path from "path";
 import readdirp from "readdirp";
 import inquirer from "inquirer";
 import { OssConfig, VersionItem } from "./types";
-import { CustomException } from "./Exception";
 
 export default class Oss {
   private distPath: string;
@@ -30,7 +29,7 @@ export default class Oss {
         await this.client.put(prefixPath.replace("\\", "/"), fullPath);
       } catch (e: any) {
         spinner.fail();
-        throw new CustomException(e);
+        throw e;
       }
     }
     spinner.succeed(`Deploy ${prefix} assets succeed.`);
@@ -50,21 +49,16 @@ export default class Oss {
       return false;
     }
     const spinner = ora(`Start removing ${prefix} assest...`).start();
-    try {
-      const list = await this.client.list(
-        {
-          prefix: prefix,
-          "max-keys": 100,
-        },
-        {}
-      );
-      list.objects = list.objects || [];
-      await Promise.all(list.objects.map((v) => this.handleDel(v.name)));
-      spinner.succeed(`Remove ${prefix} assets succeed.`);
-      return true;
-    } catch (e: any) {
-      throw new CustomException(e);
-    }
+    const list = await this.client.list(
+      {
+        prefix: prefix,
+        "max-keys": 100,
+      },
+      {}
+    );
+    list.objects = list.objects || [];
+    await Promise.all(list.objects.map((v) => this.handleDel(v.name)));
+    spinner.succeed(`Remove ${prefix} assets succeed.`);
   }
 
   async clearAllUnNeedAssests(dirList: VersionItem[]): Promise<boolean> {
@@ -82,7 +76,7 @@ export default class Oss {
       },
     ]);
     if (!answer.clear) {
-      throw new CustomException(`Clear ${dirStr} assets has been cancelled.`);
+      throw `Clear ${dirStr} assets has been cancelled.`;
     }
     for await (const dir of dirList) {
       const isDel = await this.deleteAssets(dir.version);
