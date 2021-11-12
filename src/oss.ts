@@ -1,10 +1,10 @@
 import OSS from "ali-oss";
 import ora from "ora";
-import log from "./log";
 import path from "path";
 import readdirp from "readdirp";
 import inquirer from "inquirer";
 import { OssConfig, VersionItem } from "./types";
+import { CustomException } from "./Exception";
 
 export default class Oss {
   private distPath: string;
@@ -30,7 +30,7 @@ export default class Oss {
         await this.client.put(prefixPath.replace("\\", "/"), fullPath);
       } catch (e: any) {
         spinner.fail();
-        throw new Error(e);
+        throw new CustomException(e);
       }
     }
     spinner.succeed(`Deploy ${prefix} assets succeed.`);
@@ -63,8 +63,7 @@ export default class Oss {
       spinner.succeed(`Remove ${prefix} assets succeed.`);
       return true;
     } catch (e: any) {
-      spinner.fail(e);
-      return false;
+      throw new CustomException(e);
     }
   }
 
@@ -73,7 +72,7 @@ export default class Oss {
       return false;
     }
     const dirStr = dirList.map((val) => val.version).join(",");
-    log.warn("Need clear versions:" + dirStr);
+    console.warn("Need clear versions:" + dirStr);
     const answer = await inquirer.prompt([
       {
         type: "confirm",
@@ -83,7 +82,7 @@ export default class Oss {
       },
     ]);
     if (!answer.clear) {
-      throw new Error(`Clear ${dirStr} assets has been cancelled.`);
+      throw new CustomException(`Clear ${dirStr} assets has been cancelled.`);
     }
     for await (const dir of dirList) {
       const isDel = await this.deleteAssets(dir.version);

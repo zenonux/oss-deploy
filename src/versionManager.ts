@@ -2,6 +2,7 @@ import jsonfile from "jsonfile";
 import ora from "ora";
 import { ModeType } from "./types";
 import * as fs from "fs";
+import { CustomException } from "./Exception";
 
 interface VersionItem {
   version: string;
@@ -26,7 +27,7 @@ export default class VersionManager {
       });
       await fs.promises.chmod(this.jsonPath, 0o444);
     } catch (e: any) {
-      throw new Error(e);
+      throw new CustomException(e);
     }
   }
 
@@ -43,7 +44,7 @@ export default class VersionManager {
       const list: VersionItem[] = await jsonfile.readFile(this.jsonPath);
       return list;
     } catch (e: any) {
-      throw new Error(e);
+      throw new CustomException(e);
     }
   }
 
@@ -52,14 +53,14 @@ export default class VersionManager {
       const list: VersionItem[] = await this.getJsonFile();
       return list.some((val) => val.version === prefix);
     } catch (e: any) {
-      throw new Error(e);
+      throw new CustomException(e);
     }
   }
 
   async addVersion(prefix: string): Promise<string> {
     const isHasVersion = await this.checkHasVersion(prefix);
     if (isHasVersion) {
-      throw new Error(
+      throw new CustomException(
         `${prefix} has been uploaded already,please check your version!`
       );
     }
@@ -75,7 +76,7 @@ export default class VersionManager {
       return prefix;
     } catch (e: any) {
       spinner.fail();
-      throw new Error(e);
+      throw new CustomException(e);
     }
   }
 

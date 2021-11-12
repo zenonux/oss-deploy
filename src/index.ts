@@ -5,6 +5,7 @@ import Server from "./server";
 import inquirer from "inquirer";
 import { Config, ModeType } from "./types";
 import Joi from "joi";
+import { CustomException } from "./Exception";
 
 export default class Aod {
   private config: Config;
@@ -28,7 +29,7 @@ export default class Aod {
 
     const isHasVersion = await this.versionManager.checkHasVersion(prefix);
     if (isHasVersion) {
-      throw new Error(
+      throw new CustomException(
         `${prefix} has been uploaded already,please check your version!`
       );
     }
@@ -44,7 +45,7 @@ export default class Aod {
         },
       ]);
       if (!answer.release) {
-        throw new Error(`releasing ${prefix} has been cancelled.`);
+        throw new CustomException(`releasing ${prefix} has been cancelled.`);
       }
     }
 
@@ -70,8 +71,7 @@ export default class Aod {
       this.config.maxVersionCountOfMode
     );
     if (prefixList.length <= 0) {
-      log.warn("No assets need to clear.");
-      return;
+      throw new CustomException("No assets need to clear.");
     }
     // clearing production assets needs confirm operation
     if (mode == "prod") {
@@ -126,8 +126,7 @@ export default class Aod {
     }).unknown(true);
     const validateRes = schema.validate(opts);
     if (validateRes.error) {
-      console.error(validateRes.error);
-      process.exit();
+      throw new CustomException(validateRes.error);
     }
     return validateRes.value;
   }
