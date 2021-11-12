@@ -24,9 +24,7 @@ export default class Aod {
     version: string
   ): Promise<undefined | void> {
     const serverConfig = this.config[mode];
-    const prefix = this.config.oss.prefix
-      ? this.config.oss.prefix(mode, version)
-      : "";
+    const prefix = this.config.oss.prefix(mode, version);
 
     const isHasVersion = await this.versionManager.checkHasVersion(prefix);
     if (isHasVersion) {

@@ -1,14 +1,15 @@
-import Oss from "../src/oss";
+import Aod from "../src/index";
 import config from "../.deploy.config";
-const ossClient = new Oss(config.oss);
+const client = new Aod(config);
 
 const commandWaitDelay = 100000;
-describe("oss tests", () => {
+
+describe("cli tests", () => {
   test(
-    "sync assets",
+    "upload stag 0.1.0",
     async () => {
       try {
-        await ossClient.sync("./dist", "tests/");
+        await client.uploadAssetsAndHtml("stag", "0.1.0");
       } catch (e) {
         expect(e).toBeNull();
       }
