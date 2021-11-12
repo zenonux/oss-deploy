@@ -83,8 +83,7 @@ export default class Oss {
       },
     ]);
     if (!answer.clear) {
-      log.warn(`Clear ${dirStr} assets has been cancelled.`);
-      return false;
+      throw new Error(`Clear ${dirStr} assets has been cancelled.`);
     }
     for await (const dir of dirList) {
       const isDel = await this.deleteAssets(dir.version);

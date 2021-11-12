@@ -22,16 +22,15 @@ export default class Aod {
   public async uploadAssetsAndHtml(
     mode: ModeType,
     version: string
-  ): Promise<undefined | void> {
+  ): Promise<void> {
     const serverConfig = this.config[mode];
     const prefix = this.config.oss.prefix(mode, version);
 
     const isHasVersion = await this.versionManager.checkHasVersion(prefix);
     if (isHasVersion) {
-      log.error(
+      throw new Error(
         `${prefix} has been uploaded already,please check your version!`
       );
-      return;
     }
 
     // releasing production version needs confirm operation
@@ -45,8 +44,7 @@ export default class Aod {
         },
       ]);
       if (!answer.release) {
-        log.warn(`releasing ${prefix} has been cancelled.`);
-        return;
+        throw new Error(`releasing ${prefix} has been cancelled.`);
       }
     }
 

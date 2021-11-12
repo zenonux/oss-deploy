@@ -5,6 +5,7 @@ import Aod from "./index";
 const program = new Command();
 import { getVersionFromPackage } from "./util";
 import path from "path";
+import log from "./log";
 
 program
   .command("upload <mode>")
@@ -15,10 +16,14 @@ program
   )
   .description("upload html to server and upload assets to oss")
   .action(async (mode, opts) => {
-    const config = await import(path.resolve(process.cwd(), opts.config));
-    const client = new Aod(config);
-    const version = await getVersionFromPackage();
-    await client.uploadAssetsAndHtml(mode, version);
+    try {
+      const config = await import(path.resolve(process.cwd(), opts.config));
+      const client = new Aod(config);
+      const version = await getVersionFromPackage();
+      await client.uploadAssetsAndHtml(mode, version);
+    } catch (e: any) {
+      log.error(e);
+    }
   });
 
 program
@@ -30,9 +35,13 @@ program
   )
   .description("clear unused assets in oss")
   .action(async (mode, opts) => {
-    const config = await import(path.resolve(process.cwd(), opts.config));
-    const client = new Aod(config);
-    await client.clearAssets(mode);
+    try {
+      const config = await import(path.resolve(process.cwd(), opts.config));
+      const client = new Aod(config);
+      await client.clearAssets(mode);
+    } catch (e: any) {
+      log.error(e);
+    }
   });
 
 program.parse(process.argv);

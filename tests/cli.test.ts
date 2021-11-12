@@ -6,7 +6,7 @@ const commandWaitDelay = 100000;
 
 describe("cli tests", () => {
   test(
-    "upload stag 0.1.0",
+    "upload test-stag@0.1.0",
     async () => {
       try {
         await client.uploadAssetsAndHtml("stag", "0.1.0");
@@ -16,4 +16,15 @@ describe("cli tests", () => {
     },
     commandWaitDelay
   );
+  // test(
+  //   "clear test-stag",
+  //   async () => {
+  //     try {
+  //       await client.clearAssets("stag");
+  //     } catch (e) {
+  //       expect(e).toBeNull();
+  //     }
+  //   },
+  //   commandWaitDelay
+  // );
 });
