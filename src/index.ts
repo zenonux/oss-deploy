@@ -1,4 +1,3 @@
-import log from "./log";
 import VersionManager from "./versionManager";
 import AliOSS from "./oss";
 import Server from "./server";
@@ -59,7 +58,7 @@ export default class Aod {
       this.config.maxVersionCountOfMode
     );
     if (dirList.length >= this.config.maxVersionCountOfMode) {
-      log.warn(
+      console.warn(
         `Static assets in ${mode} environment already has ${dirList.length} versions,please clear unused versions regularly.`
       );
     }
@@ -84,7 +83,7 @@ export default class Aod {
         },
       ]);
       if (!answer.release) {
-        log.warn(`clearing assets has been cancelled.`);
+        console.warn(`clearing assets has been cancelled.`);
         return;
       }
     }
