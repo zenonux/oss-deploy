@@ -5,7 +5,7 @@ export default class Aod {
     private server;
     private versionManager;
     constructor(opts: Config);
-    uploadAssetsAndHtml(mode: ModeType, version: string): Promise<undefined | void>;
+    uploadAssetsAndHtml(mode: ModeType, version: string): Promise<void>;
     clearAssets(mode: ModeType): Promise<undefined | void>;
     private validateConfig;
 }
