@@ -84,10 +84,7 @@ export default class Aod {
         return;
       }
     }
-    const isSuccess = await this.oss.clearAllUnNeedAssests(prefixList);
-    if (!isSuccess) {
-      return;
-    }
+    await this.oss.clearAllUnNeedAssests(prefixList);
     await this.versionManager.deleteVersions(prefixList);
   }
 

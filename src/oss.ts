@@ -44,10 +44,7 @@ export default class Oss {
     }
   }
 
-  async deleteAssets(prefix: string): Promise<boolean> {
-    if (!prefix) {
-      return false;
-    }
+  async deleteAssets(prefix: string): Promise<void> {
     const spinner = ora(`Start removing ${prefix} assest...`).start();
     const list = await this.client.list(
       {
@@ -61,9 +58,9 @@ export default class Oss {
     spinner.succeed(`Remove ${prefix} assets succeed.`);
   }
 
-  async clearAllUnNeedAssests(dirList: VersionItem[]): Promise<boolean> {
+  async clearAllUnNeedAssests(dirList: VersionItem[]): Promise<void> {
     if (dirList.length <= 0) {
-      return false;
+      throw "No assets needs clear.";
     }
     const dirStr = dirList.map((val) => val.version).join(",");
     console.warn("Need clear versions:" + dirStr);
@@ -79,11 +76,7 @@ export default class Oss {
       throw `Clear ${dirStr} assets has been cancelled.`;
     }
     for await (const dir of dirList) {
-      const isDel = await this.deleteAssets(dir.version);
-      if (!isDel) {
-        return false;
-      }
+      await this.deleteAssets(dir.version);
     }
-    return true;
   }
 }
