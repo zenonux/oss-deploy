@@ -1,6 +1,8 @@
 # oss-deploy
 
-it will upload index.html to Server and upload assets(css,js,img) to aliyun oss with version manager using a local json file.
+cli tool for deploy assets to oss.
+
+> It uploads index.html to remote server and uploads assets(css,js,img) to aliyun oss,using a local json file to manage version.
 
 ## Install
 
