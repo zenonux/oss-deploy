@@ -40,7 +40,6 @@
     "@types/jest": "^27.0.2",
     "@types/joi": "^17.2.3",
     "@types/jsonfile": "^6.0.1",
-    "@types/lodash": "^4.14.176",
     "@types/node": "^16.7.1",
     "@types/ora": "^3.2.0",
     "@types/ssh2": "^0.5.47",
