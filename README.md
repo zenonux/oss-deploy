@@ -12,7 +12,7 @@ npm i @urcloud/oss-deploy -D
 
 ## Usage
 
-./.deploy.config.js
+1. create `.deploy.config.js` on the root of the project
 
 ```js
 module.exports = {
@@ -43,7 +43,7 @@ module.exports = {
 }
 ```
 
-package.json
+2. add `scripts` in package.json
 
 ```json
 {
