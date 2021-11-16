@@ -7,7 +7,7 @@ cli tool for deploy assets to oss.
 ## Install
 
 ```bash
-npm i @urcloud/oss-deploy -D
+npm i @urcloud/oss-deploy -g
 ```
 
 ## Usage
