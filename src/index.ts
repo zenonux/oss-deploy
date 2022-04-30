@@ -1,126 +1,86 @@
-import VersionManager from "./versionManager";
-import AliOSS from "./oss";
-import Server from "./server";
-import inquirer from "inquirer";
-import { Config, ModeType } from "./types";
-import Joi from "joi";
+import { Options, ModeType } from "./types";
+import BucketManagerFactory from "./BucketManager";
+import { validateUploadOptions } from "./util";
+import compareVersions from "compare-versions";
 
-export default class Aod {
-  private config: Config;
-  private oss;
-  private server;
-  private versionManager;
-
-  constructor(opts: Config) {
-    this.config = this.validateConfig(opts);
-    this.oss = new AliOSS(this.config.oss, this.config.distPath);
-    this.server = new Server(this.config.distPath);
-    this.versionManager = new VersionManager(this.config.jsonPath);
+export default class OssDeploy {
+  private _oss;
+  private _distPath;
+  private _versions: string[] = [];
+  constructor(options: Options) {
+    options = this._validateOptions(options);
+    const { distPath, ...ossOptions } = options;
+    this._distPath = distPath;
+    this._oss = BucketManagerFactory.create(ossOptions);
   }
 
-  public async uploadAssetsAndHtml(
+  async uploadAssets(
+    name: string,
     mode: ModeType,
     version: string
   ): Promise<void> {
-    const serverConfig = this.config[mode];
-    const prefix = this.config.oss.prefix(mode, version);
-
-    const isHasVersion = await this.versionManager.checkHasVersion(prefix);
-    if (isHasVersion) {
-      throw `${prefix} has been uploaded already,please check your version!`;
+    const [err] = validateUploadOptions(name, mode, version);
+    if (err) {
+      throw new Error(err);
     }
-
-    // releasing production version needs confirm operation
-    if (mode == "prod") {
-      const answer = await inquirer.prompt([
-        {
-          type: "confirm",
-          name: "release",
-          message: `confirm releasing ${prefix}?`,
-          default: false,
-        },
-      ]);
-      if (!answer.release) {
-        throw `releasing ${prefix} has been cancelled.`;
-      }
-    }
-
-    await this.oss.uploadAssets(prefix);
-    await this.server.uploadHtml(serverConfig);
-    await this.versionManager.addVersion(prefix);
-
-    // need  clear version warning
-    const dirList = await this.versionManager.getNeedClearVersions(
-      mode,
-      this.config.maxVersionCountOfMode
-    );
-    if (dirList.length >= this.config.maxVersionCountOfMode) {
-      console.warn(
-        `Static assets in ${mode} environment already has ${dirList.length} versions,please clear unused versions regularly.`
+    const prefix = this._buildPrefix(name, mode, version);
+    this._versions = await this._oss.listRemoteDirectory(name + "/");
+    if (this._versions.length > 0 && this._versions.some((v) => v === prefix)) {
+      throw new Error(
+        `${mode}@${version} of ${name} has already exist,please check your version!`
       );
     }
+    await this._oss.uploadLocalDirectory(prefix, this._distPath);
+    this._versions.push(prefix);
+    await this._clearAssets(name, mode);
   }
 
-  public async clearAssets(mode: ModeType): Promise<undefined | void> {
-    const prefixList = await this.versionManager.getNeedClearVersions(
-      mode,
-      this.config.maxVersionCountOfMode
+  private async _clearAssets(name: string, mode: ModeType) {
+    const list = this._getNeedClearVersionList(name, mode);
+    if (list.length <= 0) {
+      return;
+    }
+    for await (const prefix of list) {
+      console.info(`clear ${prefix} start...`);
+      await this._oss.clearRemoteDirectory(prefix);
+      console.info(`clear ${prefix} end.`);
+    }
+  }
+
+  private _getNeedClearVersionList(name: string, mode: ModeType) {
+    const modeVerStr = name + "/" + mode;
+    const modeVersions = this._versions.filter(
+      (v) => v.indexOf(modeVerStr) !== -1
     );
-    if (prefixList.length <= 0) {
-      throw "No assets need to clear.";
+
+    // 保留3个版本
+    if (modeVersions.length <= 3) {
+      return [];
     }
-    // clearing production assets needs confirm operation
-    if (mode == "prod") {
-      const answer = await inquirer.prompt([
-        {
-          type: "confirm",
-          name: "release",
-          message: `confirm clearing unused assets?`,
-          default: false,
-        },
-      ]);
-      if (!answer.release) {
-        console.warn(`clearing assets has been cancelled.`);
-        return;
-      }
+    // 超过10个版本清理一次
+    if (modeVersions.length > 10) {
+      // 从小到大排序
+      const versions = modeVersions.map(
+        (val) => val.split("@")[1].split("/")[0]
+      );
+      const sorted = versions.sort((a, b) => compareVersions(b, a));
+      const needClearList = sorted.slice(5);
+      return needClearList.map((v) => this._buildPrefix(name, mode, v));
     }
-    await this.oss.clearAllUnNeedAssests(prefixList);
-    await this.versionManager.deleteVersions(prefixList);
+    return [];
   }
 
-  private validateConfig(opts: Config): Config {
-    const schema = Joi.object({
-      distPath: Joi.string().default("./dist"),
-      jsonPath: Joi.string().default("./deploy.version.json"),
-      maxVersionCountOfMode: Joi.number().default(5),
-      oss: Joi.object({
-        accessKeyId: Joi.string().required(),
-        accessKeySecret: Joi.string().required(),
-        region: Joi.string().required(),
-        bucket: Joi.string().required(),
-        prefix: Joi.function().arity(2).required(),
-      })
-        .unknown(true)
-        .required(),
-      stag: Joi.object({
-        host: Joi.string().required(),
-        username: Joi.string().required(),
-        password: Joi.string().required(),
-        serverPath: Joi.string().required(),
-      }).unknown(true),
-      prod: Joi.object({
-        host: Joi.string().required(),
-        username: Joi.string().required(),
-        password: Joi.string().required(),
-        serverPath: Joi.string().required(),
-      })
-        .unknown(true)
-        .required(),
-    }).unknown(true);
-    const validateRes = schema.validate(opts);
-    if (validateRes.error) {
-      throw validateRes.error;
-    }
-    return validateRes.value;
+  private _buildPrefix(name: string, mode: ModeType, version: string) {
+    return name + "/" + mode + "@" + version + "/";
+  }
+
+  private _validateOptions(opts: Options): Options {
+    const fields = ["distPath", "SecretId", "SecretKey", "Region", "Bucket"];
+    fields.forEach((val) => {
+      if (!opts[val as keyof Options]) {
+        throw new Error(`${val} is required.`);
+      }
+    });
+    return opts;
   }
 }

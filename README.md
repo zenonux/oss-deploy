@@ -1,13 +1,18 @@
 # oss-deploy
 
-cli tool for deploy assets to oss.
+cli tool for deploy assets to tencent cos.
 
-> It uploads index.html to remote server and uploads assets(css,js,img) to aliyun oss,using a local json file to manage version.
+## How it works
+
+1. read `name`,`version` fields from local package.json.
+2. check `name`/`mode`@`version` if exists on tencent cos.
+3. upload local assets from `distPath`.
+4. clear unused assests on tencent cos(only keep recent 5 version of each mode).
 
 ## Install
 
 ```bash
-npm i @urcloud/oss-deploy -g
+npm i @urcloud/oss-deploy -D
 ```
 
 ## Usage
@@ -17,29 +22,10 @@ npm i @urcloud/oss-deploy -g
 ```js
 module.exports = {
   distPath: './dist',
-  jsonPath: './deploy.version.json',
-  maxVersionCountOfMode: 5,
-  oss: {
-    accessKeyId: '',
-    accessKeySecret: '',
-    region: 'oss-cn-shanghai',
-    bucket: 'test',
-    prefix: (mode, version) => {
-      return mode + '@' + version
-    },
-  },
-  stag: {
-    host: '',
-    username: '',
-    password: '',
-    serverPath: '',
-  },
-  prod: {
-    host: '',
-    username: '',
-    password: '',
-    serverPath: '',
-  },
+  SecretId: '',
+  SecretKey: '',
+  Region: 'ap-shanghai',
+  Bucket: 'test',
 }
 ```
 
@@ -49,9 +35,7 @@ module.exports = {
 {
   "scripts": {
     "deploy:stag": "oss-deploy upload stag",
-    "clear:stag": "oss-deploy clear stag",
-    "deploy:prod": "oss-deploy upload prod",
-    "clear:prod": "oss-deploy clear prod"
+    "deploy:prod": "oss-deploy upload prod"
   }
 }
 ```

@@ -1,30 +1,20 @@
 export type ModeType = "stag" | "prod";
 
-export interface OssConfig {
-  region: string;
-  accessKeyId: string;
-  accessKeySecret: string;
-  bucket: string;
-  prefix: (mode: ModeType, version: string) => string;
+export type OssOptions = {
+  Region: string;
+  SecretId: string;
+  SecretKey: string;
+  Bucket: string;
+};
+
+export interface BucketManager {
+  uploadLocalFile(name: string, filePath: string): Promise<any>;
+  uploadLocalDirectory(name: string, dirPath: string): Promise<any>;
+  listRemoteFiles(prefix: string): Promise<string[]>;
+  listRemoteDirectory(prefix: string): Promise<string[]>;
+  clearRemoteDirectory(prefix: string): Promise<void>;
 }
 
-export interface VersionItem {
-  version: string;
-  release_time: string;
-}
-
-export interface ServerConfig {
-  host: string;
-  username: string;
-  password: string;
-  serverPath: string;
-}
-
-export interface Config {
+export type Options = OssOptions & {
   distPath: string;
-  jsonPath: string;
-  maxVersionCountOfMode: number;
-  oss: OssConfig;
-  stag: ServerConfig;
-  prod: ServerConfig;
-}
+};
