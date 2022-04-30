@@ -1,6 +1,5 @@
 node_modules/
 
-dist/
 .deploy.config.js
 .deploy.config.ts
 deploy.version.json
