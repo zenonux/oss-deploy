@@ -4,10 +4,10 @@ cli tool for deploy assets to tencent cos.
 
 ## How it works
 
-1. read `name`,`version` fields from local package.json.
-2. check `name`/`mode`@`version` if exists on tencent cos.
-3. upload local assets from `distPath`.
-4. clear unused assests on tencent cos(only keep recent 5 version of each mode).
+1. Read `name`,`version` fields from local package.json.
+2. Check `name`/`mode`@`version` if exists on tencent cos.
+3. Upload local assets from `distPath`.
+4. Clear unused asests on tencent cos(only keep recent 5 version of each mode).
 
 ## Install
 
