@@ -32,6 +32,7 @@ export default class OssDeploy {
     }
     await this._oss.uploadLocalDirectory(prefix, this._distPath);
     this._versions.push(prefix);
+    console.info(`upload ${prefix} success.`);
     await this._clearAssets(name, mode);
   }
 

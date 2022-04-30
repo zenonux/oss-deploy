@@ -188,6 +188,7 @@ var OssDeploy = class {
     }
     await this._oss.uploadLocalDirectory(prefix, this._distPath);
     this._versions.push(prefix);
+    console.info(`upload ${prefix} success.`);
     await this._clearAssets(name, mode);
   }
   async _clearAssets(name, mode) {
@@ -232,7 +233,7 @@ var OssDeploy = class {
 // src/cli.ts
 var import_path2 = __toESM(require("path"));
 var program = new import_commander.Command();
-program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy config file", "./.deploy.config.js").description("upload html to server and upload assets to oss").action(async (mode, opts) => {
+program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy config file", "./.deploy.config.js").description("upload assets to cos").action(async (mode, opts) => {
   try {
     const config = await Promise.resolve().then(() => __toESM(require(import_path2.default.resolve(process.cwd(), opts.config))));
     const client = new OssDeploy(config);

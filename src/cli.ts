@@ -13,7 +13,7 @@ program
     "deploy config file",
     "./.deploy.config.js"
   )
-  .description("upload html to server and upload assets to oss")
+  .description("upload assets to cos")
   .action(async (mode, opts) => {
     try {
       const config = await import(path.resolve(process.cwd(), opts.config));
