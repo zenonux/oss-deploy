@@ -7,6 +7,18 @@ var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __spreadValues = (a, b) => {
+  for (var prop in b || (b = {}))
+    if (__hasOwnProp.call(b, prop))
+      __defNormalProp(a, prop, b[prop]);
+  if (__getOwnPropSymbols)
+    for (var prop of __getOwnPropSymbols(b)) {
+      if (__propIsEnum.call(b, prop))
+        __defNormalProp(a, prop, b[prop]);
+    }
+  return a;
+};
 var __objRest = (source, exclude) => {
   var target = {};
   for (var prop in source)
@@ -32,7 +44,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 // src/cli.ts
 var import_commander = require("commander");
 
-// src/BucketManager.ts
+// src/bucketManager.ts
 var import_fs = __toESM(require("fs"));
 var import_cos_nodejs_sdk_v5 = __toESM(require("cos-nodejs-sdk-v5"));
 var import_path = __toESM(require("path"));
@@ -115,12 +127,10 @@ var BucketManagerFactory = class {
 
 // src/util.ts
 var import_fs2 = __toESM(require("fs"));
-var getInfoFromPkg = () => {
-  const { name, version } = JSON.parse(import_fs2.default.readFileSync("./package.json", "utf8"));
-  return {
-    name,
-    version
-  };
+var import_path2 = __toESM(require("path"));
+var readJsonFile = (file) => {
+  const filePath = import_path2.default.resolve(process.cwd(), file);
+  return JSON.parse(import_fs2.default.readFileSync(filePath, "utf-8"));
 };
 var validateName = (name) => {
   if (!name) {
@@ -231,14 +241,17 @@ var OssDeploy = class {
 };
 
 // src/cli.ts
-var import_path2 = __toESM(require("path"));
 var program = new import_commander.Command();
-program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy config file", "./.deploy.config.js").description("upload assets to cos").action(async (mode, opts) => {
+program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy config file", "./deploy.config.json").description("upload assets to cos").action(async (mode, opts) => {
   try {
-    const config = await Promise.resolve().then(() => __toESM(require(import_path2.default.resolve(process.cwd(), opts.config))));
-    const client = new OssDeploy(config);
-    const info = getInfoFromPkg();
-    await client.uploadAssets(info.name, mode, info.version);
+    const config = readJsonFile(opts.config);
+    const ossConfig = readJsonFile(config.ossConfigPath);
+    const options = __spreadValues({
+      distPath: config.distPath
+    }, ossConfig);
+    const client = new OssDeploy(options);
+    const { name, version } = readJsonFile(config.packageJsonPath);
+    await client.uploadAssets(name, mode, version);
   } catch (e) {
     console.error(e);
   }

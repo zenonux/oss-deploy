@@ -1,16 +1,10 @@
 import fs from "fs";
+import path from "path";
 import { ModeType } from "./types";
-export const getInfoFromPkg = (): {
-  name: string;
-  version: string;
-} => {
-  const { name, version } = JSON.parse(
-    fs.readFileSync("./package.json", "utf8")
-  );
-  return {
-    name,
-    version,
-  };
+
+export const readJsonFile = (file: string): Record<string, any> => {
+  const filePath = path.resolve(process.cwd(), file);
+  return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 };
 
 const validateName = (name: string) => {

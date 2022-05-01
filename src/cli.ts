@@ -3,25 +3,30 @@
 import { Command } from "commander";
 import OssDeploy from "./index";
 const program = new Command();
-import { getInfoFromPkg } from "./util";
-import path from "path";
+import { readJsonFile } from "./util";
+import { Options } from "./types";
 
 program
   .command("upload <mode>")
   .requiredOption(
     "-c, --config <file>",
     "deploy config file",
-    "./.deploy.config.js"
+    "./deploy.config.json"
   )
   .description("upload assets to cos")
   .action(async (mode, opts) => {
     try {
-      const config = await import(path.resolve(process.cwd(), opts.config));
-      const client = new OssDeploy(config);
-      const info = getInfoFromPkg();
-      await client.uploadAssets(info.name, mode, info.version);
-    } catch (e: any) {
-      console.error(e);
+      const config = readJsonFile(opts.config);
+      const ossConfig = readJsonFile(config.ossConfigPath);
+      const options = {
+        distPath: config.distPath,
+        ...ossConfig,
+      };
+      const client = new OssDeploy(options as Options);
+      const { name, version } = readJsonFile(config.packageJsonPath);
+      await client.uploadAssets(name, mode, version);
+    } catch (e) {
+      console.error(e as Error);
     }
   });
 

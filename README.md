@@ -1,13 +1,13 @@
 # oss-deploy
 
-cli tool for deploy assets to tencent cos.
+Cli tool for deploy assets to tencent cos.
 
 ## How it works
 
 1. Read `name`,`version` fields from local package.json.
-2. Check `name`/`mode`@`version` if exists on tencent cos.
+2. Check `name`/`mode`@`version` whether exists on tencent cos.
 3. Upload local assets from `distPath`.
-4. Clear unused asests on tencent cos(keep only recent 5 version of each mode).
+4. Clear unused asests on tencent cos(keep only recent 5 versions of each mode).
 
 ## Install
 
@@ -17,19 +17,28 @@ npm i @urcloud/oss-deploy -D
 
 ## Usage
 
-1. create `.deploy.config.js` on the root of the project
+1. create `deploy.config.json` on the root of the project
 
-```js
-module.exports = {
-  distPath: './dist',
-  SecretId: '',
-  SecretKey: '',
-  Region: 'ap-shanghai',
-  Bucket: 'test',
+```json
+{
+  "distPath": "./dist",
+  "packageJsonPath": "./package.json",
+  "ossConfigPath": "./oss-config.json"
 }
 ```
 
-2. add `scripts` in package.json
+2. create `oss-config.json`
+
+```json
+{
+  "Region": "ap-shanghai",
+  "Bucket": "test",
+  "SecretId": "",
+  "SecretKey": ""
+}
+```
+
+3. add `scripts` in package.json
 
 ```json
 {

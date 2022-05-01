@@ -1,21 +1,21 @@
 import OssdDeploy from "../src/index";
-import config from "../.deploy.config";
-const client = new OssdDeploy(config);
+import { OssOptions } from "../src/types";
+import { readJsonFile } from "../src/util";
 
-const commandWaitDelay = 100000;
+const ossConfig = readJsonFile("./oss-config.json");
+const client = new OssdDeploy({
+  distPath: "./dist",
+  ...(ossConfig as OssOptions),
+});
 
 describe("cli tests", () => {
-  test(
-    "upload test-stag@0.1.0",
-    async () => {
-      try {
-        await client.uploadAssets("test", "stag", "0.4.22");
-      } catch (e) {
-        expect(e).toBeNull();
-      }
-    },
-    commandWaitDelay
-  );
+  test("upload test-stag@0.1.0", async () => {
+    try {
+      await client.uploadAssets("test", "stag", "0.4.23");
+    } catch (e) {
+      expect(e).toBeNull();
+    }
+  });
   // test(
   //   "clear test-stag",
   //   async () => {

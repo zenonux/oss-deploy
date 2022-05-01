@@ -1,7 +1,6 @@
 node_modules/
 
-.deploy.config.js
-.deploy.config.ts
-deploy.version.json
+deploy.config.json
+oss-config.json
 
 .DS_Store
