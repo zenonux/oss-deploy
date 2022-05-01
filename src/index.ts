@@ -54,11 +54,7 @@ export default class OssDeploy {
       (v) => v.indexOf(modeVerStr) !== -1
     );
 
-    // 保留3个版本
-    if (modeVersions.length <= 3) {
-      return [];
-    }
-    // 超过10个版本清理一次
+    // 超过10个版本清理一次,仅保留最近5个版本
     if (modeVersions.length > 10) {
       // 从小到大排序
       const versions = modeVersions.map(

@@ -215,9 +215,6 @@ var OssDeploy = class {
   _getNeedClearVersionList(name, mode) {
     const modeVerStr = name + "/" + mode;
     const modeVersions = this._versions.filter((v) => v.indexOf(modeVerStr) !== -1);
-    if (modeVersions.length <= 3) {
-      return [];
-    }
     if (modeVersions.length > 10) {
       const versions = modeVersions.map((val) => val.split("@")[1].split("/")[0]);
       const sorted = versions.sort((a, b) => (0, import_compare_versions.default)(b, a));
