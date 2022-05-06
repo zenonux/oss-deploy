@@ -238,13 +238,18 @@ var OssDeploy = class {
 var { Command } = require("commander");
 var program = new Command();
 program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy config file", "./deploy.config.json").description("upload assets to cos").action(async (mode, opts) => {
-  const config = readJsonFile(opts.config);
-  const ossConfig = readJsonFile(config.ossConfigPath);
-  const options = __spreadValues({
-    distPath: config.distPath
-  }, ossConfig);
-  const client = new OssDeploy(options);
-  const { name, version } = readJsonFile(config.packageJsonPath);
-  await client.uploadAssets(name, mode, version);
+  try {
+    const config = readJsonFile(opts.config);
+    const ossConfig = readJsonFile(config.ossConfigPath);
+    const options = __spreadValues({
+      distPath: config.distPath
+    }, ossConfig);
+    const client = new OssDeploy(options);
+    const { name, version } = readJsonFile(config.packageJsonPath);
+    await client.uploadAssets(name, mode, version);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
 });
 program.parse(process.argv);
