@@ -40,7 +40,7 @@ __export(src_exports, {
 });
 module.exports = __toCommonJS(src_exports);
 
-// src/bucketManager.ts
+// src/bucket.ts
 var import_fs = __toESM(require("fs"));
 var import_cos_nodejs_sdk_v5 = __toESM(require("cos-nodejs-sdk-v5"));
 var import_path = __toESM(require("path"));

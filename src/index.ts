@@ -1,5 +1,5 @@
 import { Options, ModeType } from "./types";
-import BucketManagerFactory from "./bucketManager";
+import BucketManagerFactory from "./bucket";
 import { validateUploadOptions } from "./util";
 import compareVersions from "compare-versions";
 

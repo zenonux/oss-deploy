@@ -41,10 +41,7 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
 
-// src/cli.ts
-var import_commander = require("commander");
-
-// src/bucketManager.ts
+// src/bucket.ts
 var import_fs = __toESM(require("fs"));
 var import_cos_nodejs_sdk_v5 = __toESM(require("cos-nodejs-sdk-v5"));
 var import_path = __toESM(require("path"));
@@ -238,19 +235,16 @@ var OssDeploy = class {
 };
 
 // src/cli.ts
-var program = new import_commander.Command();
+var { Command } = require("commander");
+var program = new Command();
 program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy config file", "./deploy.config.json").description("upload assets to cos").action(async (mode, opts) => {
-  try {
-    const config = readJsonFile(opts.config);
-    const ossConfig = readJsonFile(config.ossConfigPath);
-    const options = __spreadValues({
-      distPath: config.distPath
-    }, ossConfig);
-    const client = new OssDeploy(options);
-    const { name, version } = readJsonFile(config.packageJsonPath);
-    await client.uploadAssets(name, mode, version);
-  } catch (e) {
-    console.error(e);
-  }
+  const config = readJsonFile(opts.config);
+  const ossConfig = readJsonFile(config.ossConfigPath);
+  const options = __spreadValues({
+    distPath: config.distPath
+  }, ossConfig);
+  const client = new OssDeploy(options);
+  const { name, version } = readJsonFile(config.packageJsonPath);
+  await client.uploadAssets(name, mode, version);
 });
 program.parse(process.argv);
