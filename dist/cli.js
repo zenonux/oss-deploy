@@ -73,6 +73,7 @@ var CosBucketManager = class {
       const relativePath = import_path.default.relative(dirPath, fullPath);
       const prefixPath = (prefix + "/" + relativePath).replace("\\", "/");
       await this.uploadLocalFile(prefixPath, fullPath);
+      console.info(`upload ${prefixPath} success.`);
     }
   }
   async listRemoteFiles(prefix) {

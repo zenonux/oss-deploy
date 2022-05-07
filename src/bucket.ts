@@ -35,6 +35,7 @@ class CosBucketManager implements BucketManager {
       const relativePath = path.relative(dirPath, fullPath);
       const prefixPath = (prefix + "/" + relativePath).replace("\\", "/");
       await this.uploadLocalFile(prefixPath, fullPath);
+      console.info(`upload ${prefixPath} success.`)
     }
   }
 
