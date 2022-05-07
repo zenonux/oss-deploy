@@ -22,6 +22,7 @@ npm i @urcloud/oss-deploy -D
 ```json
 {
   "distPath": "./dist",
+  "distFilterOptions":[],
   "packageJsonPath": "./package.json",
   "ossConfigPath": "./oss-config.json"
 }

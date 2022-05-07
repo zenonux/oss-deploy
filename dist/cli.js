@@ -66,9 +66,9 @@ var CosBucketManager = class {
     });
     return res;
   }
-  async uploadLocalDirectory(prefix, dirPath) {
+  async uploadLocalDirectory(prefix, dirPath, filterOpts = {}) {
     dirPath = import_path.default.resolve(dirPath);
-    for await (const entry of (0, import_readdirp.default)(dirPath)) {
+    for await (const entry of (0, import_readdirp.default)(dirPath, filterOpts)) {
       const { fullPath } = entry;
       const relativePath = import_path.default.relative(dirPath, fullPath);
       const prefixPath = (prefix + "/" + relativePath).replace("\\", "/");
@@ -179,8 +179,9 @@ var OssDeploy = class {
   constructor(options) {
     this._versions = [];
     options = this._validateOptions(options);
-    const _a = options, { distPath } = _a, ossOptions = __objRest(_a, ["distPath"]);
+    const _a = options, { distPath, distFilterOptions } = _a, ossOptions = __objRest(_a, ["distPath", "distFilterOptions"]);
     this._distPath = distPath;
+    this._distFilterOptions = distFilterOptions;
     this._oss = BucketManagerFactory.create(ossOptions);
   }
   async uploadAssets(name, mode, version) {
@@ -193,7 +194,7 @@ var OssDeploy = class {
     if (this._versions.length > 0 && this._versions.some((v) => v === prefix)) {
       throw new Error(`${mode}@${version} of ${name} has already exist,please check your version!`);
     }
-    await this._oss.uploadLocalDirectory(prefix, this._distPath);
+    await this._oss.uploadLocalDirectory(prefix, this._distPath, this._distFilterOptions);
     this._versions.push(prefix);
     console.info(`upload ${prefix} success.`);
     await this._clearAssets(name, mode);
@@ -242,7 +243,8 @@ program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy c
     const config = readJsonFile(opts.config);
     const ossConfig = readJsonFile(config.ossConfigPath);
     const options = __spreadValues({
-      distPath: config.distPath
+      distPath: config.distPath,
+      distFilterOptions: config.distFilterOptions
     }, ossConfig);
     const client = new OssDeploy(options);
     const { name, version } = readJsonFile(config.packageJsonPath);

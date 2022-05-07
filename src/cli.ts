@@ -20,6 +20,7 @@ program
       const ossConfig = readJsonFile(config.ossConfigPath);
       const options = {
         distPath: config.distPath,
+        distFilterOptions:config.distFilterOptions,
         ...ossConfig,
       };
       const client = new OssDeploy(options as Options);
