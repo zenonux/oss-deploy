@@ -41,6 +41,9 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target, mod));
 
+// src/cli.ts
+var import_commander = require("commander");
+
 // src/bucket.ts
 var import_fs = __toESM(require("fs"));
 var import_cos_nodejs_sdk_v5 = __toESM(require("cos-nodejs-sdk-v5"));
@@ -185,14 +188,14 @@ var OssDeploy = class {
     this._distFilterOptions = distFilterOptions;
     this._oss = BucketManagerFactory.create(ossOptions);
   }
-  async uploadAssets(name, mode, version) {
+  async uploadAssets(name, mode, version, isForce) {
     const [err] = validateUploadOptions(name, mode, version);
     if (err) {
       throw new Error(err);
     }
     const prefix = this._buildPrefix(name, mode, version);
     this._versions = await this._oss.listRemoteDirectory(name + "/");
-    if (this._versions.length > 0 && this._versions.some((v) => v === prefix)) {
+    if (!isForce && this._versions.length > 0 && this._versions.some((v) => v === prefix)) {
       throw new Error(`${mode}@${version} of ${name} has already exist,please check your version!`);
     }
     await this._oss.uploadLocalDirectory(prefix, this._distPath, this._distFilterOptions);
@@ -237,11 +240,11 @@ var OssDeploy = class {
 };
 
 // src/cli.ts
-var { Command } = require("commander");
-var program = new Command();
-program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy config file", "./deploy.config.json").description("upload assets to cos").action(async (mode, opts) => {
+var program = new import_commander.Command();
+program.command("upload <mode>").option("-f, --force").requiredOption("-c, --config <file>", "deploy config file", "./deploy.config.json").description("upload assets to cos").action(async (mode, opts) => {
   try {
     const config = readJsonFile(opts.config);
+    const isForce = opts.force;
     const ossConfig = readJsonFile(config.ossConfigPath);
     const options = __spreadValues({
       distPath: config.distPath,
@@ -249,7 +252,7 @@ program.command("upload <mode>").requiredOption("-c, --config <file>", "deploy c
     }, ossConfig);
     const client = new OssDeploy(options);
     const { name, version } = readJsonFile(config.packageJsonPath);
-    await client.uploadAssets(name, mode, version);
+    await client.uploadAssets(name, mode, version, isForce);
   } catch (e) {
     console.error(e);
     process.exit(1);

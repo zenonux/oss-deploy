@@ -8,6 +8,8 @@ declare type OssOptions = {
 declare type Options = OssOptions & {
     distPath: string;
     distFilterOptions: Record<string, any>;
+    packageJsonPath: string;
+    ossConfigPath: string;
 };
 
 declare class OssDeploy {
@@ -16,7 +18,7 @@ declare class OssDeploy {
     private _distFilterOptions;
     private _versions;
     constructor(options: Options);
-    uploadAssets(name: string, mode: ModeType, version: string): Promise<void>;
+    uploadAssets(name: string, mode: ModeType, version: string, isForce: boolean): Promise<void>;
     private _clearAssets;
     private _getNeedClearVersionList;
     private _buildPrefix;

@@ -5,6 +5,9 @@ import { readJsonFile } from "../src/util";
 const ossConfig = readJsonFile("./oss-config.json");
 const client = new OssdDeploy({
   distPath: "./dist",
+  distFilterOptions: {},
+  packageJsonPath: "../package.json",
+  ossConfigPath: "./oss-config.json",
   ...(ossConfig as OssOptions),
 });
 

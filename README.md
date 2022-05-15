@@ -22,7 +22,7 @@ npm i @urcloud/oss-deploy -D
 ```json
 {
   "distPath": "./dist",
-  "distFilterOptions":{},
+  "distFilterOptions": {},
   "packageJsonPath": "./package.json",
   "ossConfigPath": "./oss-config.json"
 }
@@ -44,7 +44,7 @@ npm i @urcloud/oss-deploy -D
 ```json
 {
   "scripts": {
-    "deploy:stag": "oss-deploy upload stag",
+    "deploy:stag": "oss-deploy upload stag --force",
     "deploy:prod": "oss-deploy upload prod"
   }
 }

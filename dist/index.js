@@ -178,14 +178,14 @@ var OssDeploy = class {
     this._distFilterOptions = distFilterOptions;
     this._oss = BucketManagerFactory.create(ossOptions);
   }
-  async uploadAssets(name, mode, version) {
+  async uploadAssets(name, mode, version, isForce) {
     const [err] = validateUploadOptions(name, mode, version);
     if (err) {
       throw new Error(err);
     }
     const prefix = this._buildPrefix(name, mode, version);
     this._versions = await this._oss.listRemoteDirectory(name + "/");
-    if (this._versions.length > 0 && this._versions.some((v) => v === prefix)) {
+    if (!isForce && this._versions.length > 0 && this._versions.some((v) => v === prefix)) {
       throw new Error(`${mode}@${version} of ${name} has already exist,please check your version!`);
     }
     await this._oss.uploadLocalDirectory(prefix, this._distPath, this._distFilterOptions);

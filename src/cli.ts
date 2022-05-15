@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-const { Command } = require("commander");
+import { Command } from "commander";
 import OssDeploy from "./index";
 const program = new Command();
 import { readJsonFile } from "./util";
@@ -22,15 +22,15 @@ program
       const ossConfig = readJsonFile(config.ossConfigPath);
       const options = {
         distPath: config.distPath,
-        distFilterOptions:config.distFilterOptions,
+        distFilterOptions: config.distFilterOptions,
         ...ossConfig,
       };
       const client = new OssDeploy(options as Options);
       const { name, version } = readJsonFile(config.packageJsonPath);
       await client.uploadAssets(name, mode, version, isForce);
     } catch (e) {
-      console.error(e)
-      process.exit(1)
+      console.error(e);
+      process.exit(1);
     }
   });
 
