@@ -1,16 +1,18 @@
 import { Options, ModeType } from "./types";
-import BucketManagerFactory from "./bucketManager";
+import BucketManagerFactory from "./bucket";
 import { validateUploadOptions } from "./util";
 import compareVersions from "compare-versions";
 
 export default class OssDeploy {
   private _oss;
   private _distPath;
+  private _distFilterOptions;
   private _versions: string[] = [];
   constructor(options: Options) {
     options = this._validateOptions(options);
-    const { distPath, ...ossOptions } = options;
+    const { distPath,distFilterOptions, ...ossOptions } = options;
     this._distPath = distPath;
+    this._distFilterOptions = distFilterOptions;
     this._oss = BucketManagerFactory.create(ossOptions);
   }
 
@@ -35,7 +37,7 @@ export default class OssDeploy {
         `${mode}@${version} of ${name} has already exist,please check your version!`
       );
     }
-    await this._oss.uploadLocalDirectory(prefix, this._distPath);
+    await this._oss.uploadLocalDirectory(prefix, this._distPath,this._distFilterOptions);
     this._versions.push(prefix);
     console.info(`upload ${prefix} success.`);
     await this._clearAssets(name, mode);

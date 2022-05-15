@@ -28,13 +28,14 @@ class CosBucketManager implements BucketManager {
     return res;
   }
 
-  async uploadLocalDirectory(prefix: string, dirPath: string) {
+  async uploadLocalDirectory(prefix: string, dirPath: string, filterOpts = {}) {
     dirPath = path.resolve(dirPath);
-    for await (const entry of readdirp(dirPath)) {
+    for await (const entry of readdirp(dirPath, filterOpts)) {
       const { fullPath } = entry;
       const relativePath = path.relative(dirPath, fullPath);
       const prefixPath = (prefix + "/" + relativePath).replace("\\", "/");
       await this.uploadLocalFile(prefixPath, fullPath);
+      console.info(`upload ${prefixPath} success.`)
     }
   }
 

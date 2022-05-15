@@ -7,11 +7,13 @@ declare type OssOptions = {
 };
 declare type Options = OssOptions & {
     distPath: string;
+    distFilterOptions: Record<string, any>;
 };
 
 declare class OssDeploy {
     private _oss;
     private _distPath;
+    private _distFilterOptions;
     private _versions;
     constructor(options: Options);
     uploadAssets(name: string, mode: ModeType, version: string): Promise<void>;
