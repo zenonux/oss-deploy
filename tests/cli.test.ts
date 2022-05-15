@@ -11,7 +11,7 @@ const client = new OssdDeploy({
 describe("cli tests", () => {
   test("upload test-stag@0.1.0", async () => {
     try {
-      await client.uploadAssets("test", "stag", "0.4.23");
+      await client.uploadAssets("test", "stag", "0.4.23", false);
     } catch (e) {
       expect(e).toBeNull();
     }

@@ -8,6 +8,7 @@ import { Options } from "./types";
 
 program
   .command("upload <mode>")
+  .option("-f, --force")
   .requiredOption(
     "-c, --config <file>",
     "deploy config file",
@@ -17,6 +18,7 @@ program
   .action(async (mode, opts) => {
     try {
       const config = readJsonFile(opts.config);
+      const isForce = opts.force;
       const ossConfig = readJsonFile(config.ossConfigPath);
       const options = {
         distPath: config.distPath,
@@ -24,7 +26,7 @@ program
       };
       const client = new OssDeploy(options as Options);
       const { name, version } = readJsonFile(config.packageJsonPath);
-      await client.uploadAssets(name, mode, version);
+      await client.uploadAssets(name, mode, version, isForce);
     } catch (e) {
       console.error(e as Error);
     }
