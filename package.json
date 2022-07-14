@@ -1,5 +1,5 @@
 {
-  "name": "test",
+  "name": "@urcloud/oss-deploy",
   "version": "1.3.2",
   "description": "Deploy static assests to tencent cos.",
   "bin": {
