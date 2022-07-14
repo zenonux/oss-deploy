@@ -5,9 +5,11 @@ const execPromise = promisify(exec)
 
 describe('cli', () => {
   it('should run upload command', async () => {
-    const data = await execPromise(
+    const [err] = await execPromise(
       `node ${path.resolve(__dirname, '../dist/cli.js')} upload stag`
     )
-    expect(data).not.toThrowError()
+      .then(() => [null])
+      .catch((e) => [e])
+    expect(err).not.toBeNull()
   })
 })
