@@ -51,5 +51,5 @@ npm i @urcloud/oss-deploy -D
 ```
 
 ## Changelog
-v1.3.4
+v1.3.6
 - fix ossConfigPath bug

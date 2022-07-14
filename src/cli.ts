@@ -23,7 +23,7 @@ program
       const rootPath = path.dirname(opts.config);
       const ossConfig = readJsonFile(config.ossConfigPath, rootPath);
       const options = {
-        distPath: config.distPath,
+        distPath: path.resolve(config.distPath, rootPath),
         distFilterOptions: config.distFilterOptions,
         ...ossConfig,
       };
