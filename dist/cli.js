@@ -253,7 +253,7 @@ program.command("upload <mode>").option("-f, --force").requiredOption("-c, --con
       distFilterOptions: config.distFilterOptions
     }, ossConfig);
     const client = new OssDeploy(options);
-    const { name, version } = readJsonFile(config.packageJsonPath);
+    const { name, version } = readJsonFile(config.packageJsonPath, rootPath);
     await client.uploadAssets(name, mode, version, isForce);
   } catch (e) {
     console.error(e);

@@ -28,7 +28,7 @@ program
         ...ossConfig,
       };
       const client = new OssDeploy(options as Options);
-      const { name, version } = readJsonFile(config.packageJsonPath);
+      const { name, version } = readJsonFile(config.packageJsonPath, rootPath);
       await client.uploadAssets(name, mode, version, isForce);
     } catch (e) {
       console.error(e);
