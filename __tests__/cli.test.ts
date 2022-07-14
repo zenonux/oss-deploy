@@ -10,6 +10,7 @@ describe('cli', () => {
     )
       .then(() => [null])
       .catch((e) => [e])
-    expect(err).not.toBeNull()
+
+    expect(err.stderr).toContain('name is not correct. example:test')
   })
 })
