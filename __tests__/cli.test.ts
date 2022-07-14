@@ -5,12 +5,12 @@ const execPromise = promisify(exec)
 
 describe('cli', () => {
   it('should run upload command', async () => {
-    const [err] = await execPromise(
-      `node ${path.resolve(__dirname, '../dist/cli.js')} upload stag`
-    )
-      .then(() => [null])
-      .catch((e) => [e])
-
-    expect(err.stderr).toContain('name is not correct. example:test')
+    try {
+      await execPromise(
+        `node ${path.resolve(__dirname, '../dist/cli.js')} upload stag`
+      )
+    } catch (err) {
+      expect((err as any).stderr).toContain('name is not correct. example:test')
+    }
   })
 })
