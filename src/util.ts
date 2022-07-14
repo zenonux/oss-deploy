@@ -2,8 +2,11 @@ import fs from "fs";
 import path from "path";
 import { ModeType } from "./types";
 
-export const readJsonFile = (file: string): Record<string, any> => {
-  const filePath = path.resolve(process.cwd(), file);
+export const readJsonFile = (
+  file: string,
+  root?: string
+): Record<string, any> => {
+  const filePath = path.resolve(root || process.cwd(), file);
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 };
 

@@ -129,8 +129,8 @@ var BucketManagerFactory = class {
 // src/util.ts
 var import_fs2 = __toESM(require("fs"));
 var import_path2 = __toESM(require("path"));
-var readJsonFile = (file) => {
-  const filePath = import_path2.default.resolve(process.cwd(), file);
+var readJsonFile = (file, root) => {
+  const filePath = import_path2.default.resolve(root || process.cwd(), file);
   return JSON.parse(import_fs2.default.readFileSync(filePath, "utf-8"));
 };
 var validateName = (name) => {
@@ -245,7 +245,7 @@ program.command("upload <mode>").option("-f, --force").requiredOption("-c, --con
   try {
     const config = readJsonFile(opts.config);
     const isForce = opts.force;
-    const ossConfig = readJsonFile(config.ossConfigPath);
+    const ossConfig = readJsonFile(config.ossConfigPath, __dirname);
     const options = __spreadValues({
       distPath: config.distPath,
       distFilterOptions: config.distFilterOptions

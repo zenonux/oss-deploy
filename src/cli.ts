@@ -19,7 +19,7 @@ program
     try {
       const config = readJsonFile(opts.config);
       const isForce = opts.force;
-      const ossConfig = readJsonFile(config.ossConfigPath);
+      const ossConfig = readJsonFile(config.ossConfigPath, __dirname);
       const options = {
         distPath: config.distPath,
         distFilterOptions: config.distFilterOptions,
