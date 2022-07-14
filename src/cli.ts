@@ -5,6 +5,7 @@ import OssDeploy from "./index";
 const program = new Command();
 import { readJsonFile } from "./util";
 import { ModeType, Options } from "./types";
+import path from "path";
 
 program
   .command("upload <mode>")
@@ -19,7 +20,8 @@ program
     try {
       const config = readJsonFile(opts.config);
       const isForce = opts.force;
-      const ossConfig = readJsonFile(config.ossConfigPath, __dirname);
+      const rootPath = path.dirname(opts.config);
+      const ossConfig = readJsonFile(config.ossConfigPath, rootPath);
       const options = {
         distPath: config.distPath,
         distFilterOptions: config.distFilterOptions,
