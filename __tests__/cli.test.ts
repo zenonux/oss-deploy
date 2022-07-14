@@ -1,11 +1,13 @@
-import { exec, type ExecException } from 'child_process'
+import { exec } from 'child_process'
+import { promisify } from 'util'
+import path from 'path'
+const execPromise = promisify(exec)
 
 describe('cli', () => {
-  it('should run upload command', (done: jest.DoneCallback) => {
-    const script = '"node ../dist/cli.js" upload stag'
-    exec(script, (error: ExecException | null, stdout: string) => {
-      expect(stdout).toMatch(/success/)
-      done()
-    })
+  it('should run upload command', async () => {
+    const data = await execPromise(
+      `node ${path.resolve(__dirname, '../dist/cli.js')} upload stag`
+    )
+    expect(data).not.toThrowError()
   })
 })
