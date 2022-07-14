@@ -249,7 +249,7 @@ program.command("upload <mode>").option("-f, --force").requiredOption("-c, --con
     const rootPath = import_path3.default.dirname(opts.config);
     const ossConfig = readJsonFile(config.ossConfigPath, rootPath);
     const options = __spreadValues({
-      distPath: import_path3.default.resolve(config.distPath, rootPath),
+      distPath: import_path3.default.resolve(rootPath, config.distPath),
       distFilterOptions: config.distFilterOptions
     }, ossConfig);
     const client = new OssDeploy(options);
