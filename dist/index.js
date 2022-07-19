@@ -45,6 +45,8 @@ var import_fs = __toESM(require("fs"));
 var import_cos_nodejs_sdk_v5 = __toESM(require("cos-nodejs-sdk-v5"));
 var import_path = __toESM(require("path"));
 var import_readdirp = __toESM(require("readdirp"));
+var import_p_limit = __toESM(require("p-limit"));
+var limit = (0, import_p_limit.default)(3);
 var CosBucketManager = class {
   constructor(options) {
     this._options = options;
@@ -53,27 +55,30 @@ var CosBucketManager = class {
       SecretKey: options.SecretKey
     });
   }
-  async uploadLocalFile(prefix, filePath) {
+  async uploadLocalFile(prefixPath, filePath) {
     if (!this._client) {
       return;
     }
+    console.info(`Uploading ${prefixPath} ...`);
     const res = await this._client.putObject({
       Bucket: this._options.Bucket,
       Region: this._options.Region,
-      Key: prefix,
+      Key: prefixPath,
       Body: import_fs.default.createReadStream(filePath)
     });
+    console.info(`Upload ${prefixPath} success.`);
     return res;
   }
   async uploadLocalDirectory(prefix, dirPath, filterOpts = {}) {
     dirPath = import_path.default.resolve(dirPath);
+    const input = [];
     for await (const entry of (0, import_readdirp.default)(dirPath, filterOpts)) {
       const { fullPath } = entry;
       const relativePath = import_path.default.relative(dirPath, fullPath);
       const prefixPath = (prefix + "/" + relativePath).replace("\\", "/");
-      await this.uploadLocalFile(prefixPath, fullPath);
-      console.info(`upload ${prefixPath} success.`);
+      input.push(limit(() => this.uploadLocalFile(prefixPath, fullPath)));
     }
+    await Promise.all(input);
   }
   async listRemoteFiles(prefix) {
     if (!this._client) {
