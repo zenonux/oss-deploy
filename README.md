@@ -51,7 +51,7 @@ npm i @urcloud/oss-deploy -D
 ```
 
 ## Changelog
-v1.4.0
+v1.4.1
 - 默认并发3个文件上传
   
 v1.3.7
