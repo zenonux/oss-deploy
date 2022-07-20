@@ -22,7 +22,6 @@ class CosBucketManager implements BucketManager {
     if (!this._client) {
       return;
     }
-    console.info(`Uploading ${prefixPath} ...`);
     const res = await this._client.putObject({
       Bucket: this._options.Bucket,
       Region: this._options.Region,

@@ -22,6 +22,7 @@ npm i @urcloud/oss-deploy -D
 ```json
 {
   "distPath": "./dist",
+  "projectPrefix":"",
   "distFilterOptions": {},
   "packageJsonPath": "./package.json",
   "ossConfigPath": "./oss-config.json"
@@ -51,6 +52,11 @@ npm i @urcloud/oss-deploy -D
 ```
 
 ## Changelog
+
+v1.5.0
+- 配置文件支持`projectPrefix`前缀
+- export`generatePrefix`函数
+
 v1.4.1
 - 默认并发3个文件上传
   

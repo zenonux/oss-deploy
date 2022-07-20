@@ -36,7 +36,8 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
-  default: () => OssDeploy
+  default: () => OssDeploy,
+  generatePrefix: () => generatePrefix
 });
 module.exports = __toCommonJS(src_exports);
 
@@ -59,7 +60,6 @@ var CosBucketManager = class {
     if (!this._client) {
       return;
     }
-    console.info(`Uploading ${prefixPath} ...`);
     const res = await this._client.putObject({
       Bucket: this._options.Bucket,
       Region: this._options.Region,
@@ -174,6 +174,9 @@ var validateUploadOptions = (name, mode, version) => {
 
 // src/index.ts
 var import_compare_versions = __toESM(require("compare-versions"));
+var generatePrefix = (name, mode, version) => {
+  return name + "/" + mode + "@" + version + "/";
+};
 var OssDeploy = class {
   constructor(options) {
     this._versions = [];
@@ -183,12 +186,12 @@ var OssDeploy = class {
     this._distFilterOptions = distFilterOptions;
     this._oss = BucketManagerFactory.create(ossOptions);
   }
-  async uploadAssets(name, mode, version, isForce) {
+  async uploadAssets(projectPrefix, name, mode, version, isForce) {
     const [err] = validateUploadOptions(name, mode, version);
     if (err) {
       throw new Error(err);
     }
-    const prefix = this._buildPrefix(name, mode, version);
+    const prefix = this._buildPrefix(projectPrefix, name, mode, version);
     this._versions = await this._oss.listRemoteDirectory(name + "/");
     if (!isForce && this._versions.length > 0 && this._versions.some((v) => v === prefix)) {
       throw new Error(`${mode}@${version} of ${name} has already exist,please check your version!`);
@@ -196,10 +199,10 @@ var OssDeploy = class {
     await this._oss.uploadLocalDirectory(prefix, this._distPath, this._distFilterOptions);
     this._versions.push(prefix);
     console.info(`upload ${prefix} success.`);
-    await this._clearAssets(name, mode);
+    await this._clearAssets(projectPrefix, name, mode);
   }
-  async _clearAssets(name, mode) {
-    const list = this._getNeedClearVersionList(name, mode);
+  async _clearAssets(projectPrefix, name, mode) {
+    const list = this._getNeedClearVersionList(projectPrefix, name, mode);
     if (list.length <= 0) {
       return;
     }
@@ -209,19 +212,19 @@ var OssDeploy = class {
       console.info(`clear ${prefix} end.`);
     }
   }
-  _getNeedClearVersionList(name, mode) {
+  _getNeedClearVersionList(projectPrefix, name, mode) {
     const modeVerStr = name + "/" + mode;
     const modeVersions = this._versions.filter((v) => v.indexOf(modeVerStr) !== -1);
     if (modeVersions.length > 10) {
       const versions = modeVersions.map((val) => val.split("@")[1].split("/")[0]);
       const sorted = versions.sort((a, b) => (0, import_compare_versions.default)(b, a));
       const needClearList = sorted.slice(5);
-      return needClearList.map((v) => this._buildPrefix(name, mode, v));
+      return needClearList.map((v) => this._buildPrefix(projectPrefix, name, mode, v));
     }
     return [];
   }
-  _buildPrefix(name, mode, version) {
-    return name + "/" + mode + "@" + version + "/";
+  _buildPrefix(projectPrefix, name, mode, version) {
+    return projectPrefix + generatePrefix(name, mode, version);
   }
   _validateOptions(opts) {
     const fields = ["distPath", "SecretId", "SecretKey", "Region", "Bucket"];
@@ -234,4 +237,6 @@ var OssDeploy = class {
   }
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {});
+0 && (module.exports = {
+  generatePrefix
+});
