@@ -26,7 +26,7 @@ export default class OssDeploy {
   }
 
   async uploadAssets(
-    projectPrefix:string,
+    projectPrefix='',
     name: string,
     mode: ModeType,
     version: string,

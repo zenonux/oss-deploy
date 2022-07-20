@@ -20,7 +20,7 @@ declare class OssDeploy {
     private _distFilterOptions;
     private _versions;
     constructor(options: Options);
-    uploadAssets(projectPrefix: string, name: string, mode: ModeType, version: string, isForce: boolean): Promise<void>;
+    uploadAssets(projectPrefix: string | undefined, name: string, mode: ModeType, version: string, isForce: boolean): Promise<void>;
     private _clearAssets;
     private _getNeedClearVersionList;
     private _buildPrefix;

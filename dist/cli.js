@@ -195,7 +195,7 @@ var OssDeploy = class {
     this._distFilterOptions = distFilterOptions;
     this._oss = BucketManagerFactory.create(ossOptions);
   }
-  async uploadAssets(projectPrefix, name, mode, version, isForce) {
+  async uploadAssets(projectPrefix = "", name, mode, version, isForce) {
     const [err] = validateUploadOptions(name, mode, version);
     if (err) {
       throw new Error(err);
