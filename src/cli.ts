@@ -28,11 +28,11 @@ program
         ...ossConfig,
       };
       const client = new OssDeploy(options as Options);
-      const { name, version, projectPrefix } = readJsonFile(
+      const { name, version } = readJsonFile(
         config.packageJsonPath,
         rootPath
       );
-      await client.uploadAssets(projectPrefix, name, mode, version, isForce);
+      await client.uploadAssets(config.projectPrefix, name, mode, version, isForce);
     } catch (e) {
       console.error(e);
       process.exit(1);

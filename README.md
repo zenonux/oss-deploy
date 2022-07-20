@@ -53,7 +53,7 @@ npm i @urcloud/oss-deploy -D
 
 ## Changelog
 
-v1.5.1
+v1.5.2
 - 配置文件支持`projectPrefix`前缀
 - export`generatePrefix`函数
 
