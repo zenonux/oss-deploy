@@ -3,11 +3,10 @@ import BucketManagerFactory from "./bucket";
 import { validateUploadOptions } from "./util";
 import compareVersions from "compare-versions";
 
-
 export const generatePrefix = (
   name: string,
   mode: ModeType,
-  version: string,
+  version: string
 ): string => {
   return name + "/" + mode + "@" + version + "/";
 };
@@ -26,7 +25,7 @@ export default class OssDeploy {
   }
 
   async uploadAssets(
-    projectPrefix='',
+    projectPrefix = "",
     name: string,
     mode: ModeType,
     version: string,
@@ -36,8 +35,10 @@ export default class OssDeploy {
     if (err) {
       throw new Error(err);
     }
-    const prefix = this._buildPrefix(projectPrefix,name, mode, version);
-    this._versions = await this._oss.listRemoteDirectory(name + "/");
+    const prefix = this._buildPrefix(projectPrefix, name, mode, version);
+    this._versions = await this._oss.listRemoteDirectory(
+      projectPrefix + name + "/"
+    );
     if (
       !isForce &&
       this._versions.length > 0 &&
@@ -54,11 +55,15 @@ export default class OssDeploy {
     );
     this._versions.push(prefix);
     console.info(`upload ${prefix} success.`);
-    await this._clearAssets(projectPrefix,name, mode);
+    await this._clearAssets(projectPrefix, name, mode);
   }
 
-  private async _clearAssets(projectPrefix:string, name: string, mode: ModeType) {
-    const list = this._getNeedClearVersionList(projectPrefix,name, mode);
+  private async _clearAssets(
+    projectPrefix: string,
+    name: string,
+    mode: ModeType
+  ) {
+    const list = this._getNeedClearVersionList(projectPrefix, name, mode);
     if (list.length <= 0) {
       return;
     }
@@ -69,7 +74,11 @@ export default class OssDeploy {
     }
   }
 
-  private _getNeedClearVersionList(projectPrefix:string, name: string, mode: ModeType) {
+  private _getNeedClearVersionList(
+    projectPrefix: string,
+    name: string,
+    mode: ModeType
+  ) {
     const modeVerStr = name + "/" + mode;
     const modeVersions = this._versions.filter(
       (v) => v.indexOf(modeVerStr) !== -1
@@ -83,13 +92,20 @@ export default class OssDeploy {
       );
       const sorted = versions.sort((a, b) => compareVersions(b, a));
       const needClearList = sorted.slice(5);
-      return needClearList.map((v) => this._buildPrefix(projectPrefix,name, mode, v));
+      return needClearList.map((v) =>
+        this._buildPrefix(projectPrefix, name, mode, v)
+      );
     }
     return [];
   }
 
-  private _buildPrefix(projectPrefix:string,name:string,mode:ModeType,version:string){
-    return projectPrefix + generatePrefix(name,mode,version)
+  private _buildPrefix(
+    projectPrefix: string,
+    name: string,
+    mode: ModeType,
+    version: string
+  ) {
+    return projectPrefix + generatePrefix(name, mode, version);
   }
 
   private _validateOptions(opts: Options): Options {
