@@ -12,7 +12,7 @@ export const generatePrefix = (
   return ossPrefix + "/" + name + "/" + mode + "@" + version + "/";
 };
 
-export default class OssDeploy {
+export class OssDeploy {
   private _oss;
   private _distPath;
   private _distFilterOptions;
@@ -32,7 +32,7 @@ export default class OssDeploy {
     version: string,
     isForce: boolean
   ): Promise<void> {
-    const [err] = validateUploadOptions(ossPrefix,name, mode, version);
+    const [err] = validateUploadOptions(ossPrefix, name, mode, version);
     if (err) {
       throw new Error(err);
     }
@@ -89,9 +89,7 @@ export default class OssDeploy {
       );
       const sorted = versions.sort((a, b) => compareVersions(b, a));
       const needClearList = sorted.slice(5);
-      return needClearList.map((v) =>
-        generatePrefix(ossPrefix, name, mode, v)
-      );
+      return needClearList.map((v) => generatePrefix(ossPrefix, name, mode, v));
     }
     return [];
   }

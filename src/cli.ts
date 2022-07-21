@@ -1,7 +1,7 @@
 #! /usr/bin/env node
 
 import { Command } from "commander";
-import OssDeploy from "./index";
+import {OssDeploy} from "./index";
 const program = new Command();
 import { readJsonFile } from "./util";
 import { ModeType, Options } from "./types";

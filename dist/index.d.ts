@@ -26,4 +26,4 @@ declare class OssDeploy {
     private _validateOptions;
 }
 
-export { OssDeploy as default, generatePrefix };
+export { OssDeploy, generatePrefix };
