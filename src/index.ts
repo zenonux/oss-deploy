@@ -38,7 +38,7 @@ export class OssDeploy {
     }
     const prefix = generatePrefix(ossPrefix, name, mode, version);
     this._versions = await this._oss.listRemoteDirectory(
-      ossPrefix + name + "/"
+      ossPrefix + '/' + name + "/"
     );
     if (
       !isForce &&
