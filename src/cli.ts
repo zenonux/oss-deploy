@@ -32,7 +32,7 @@ program
         config.packageJsonPath,
         rootPath
       );
-      await client.uploadAssets(config.projectPrefix, name, mode, version, isForce);
+      await client.uploadAssets(config.ossPrefix, name, mode, version, isForce);
     } catch (e) {
       console.error(e);
       process.exit(1);

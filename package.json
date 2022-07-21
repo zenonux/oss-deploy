@@ -1,6 +1,6 @@
 {
   "name": "@urcloud/oss-deploy",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "description": "Deploy static assests to tencent cos.",
   "bin": {
     "oss-deploy": "dist/cli.js"

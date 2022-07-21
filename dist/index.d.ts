@@ -7,23 +7,22 @@ declare type OssOptions = {
 };
 declare type Options = OssOptions & {
     distPath: string;
-    projectPrefix: string;
+    ossPrefix: string;
     distFilterOptions: Record<string, any>;
     packageJsonPath: string;
     ossConfigPath: string;
 };
 
-declare const generatePrefix: (name: string, mode: ModeType, version: string) => string;
+declare const generatePrefix: (ossPrefix: string, name: string, mode: ModeType, version: string) => string;
 declare class OssDeploy {
     private _oss;
     private _distPath;
     private _distFilterOptions;
     private _versions;
     constructor(options: Options);
-    uploadAssets(projectPrefix: string | undefined, name: string, mode: ModeType, version: string, isForce: boolean): Promise<void>;
+    uploadAssets(ossPrefix: string | undefined, name: string, mode: ModeType, version: string, isForce: boolean): Promise<void>;
     private _clearAssets;
     private _getNeedClearVersionList;
-    private _buildPrefix;
     private _validateOptions;
 }
 

@@ -45,10 +45,14 @@ const validateVersion = (version: string) => {
 };
 
 export const validateUploadOptions = (
+  ossPrefix:string,
   name: string,
   mode: ModeType,
   version: string
 ): (string | null)[] => {
+  if (!validateName(ossPrefix)) {
+    return ["ossPrefix is not correct. example:hello-world"];
+  }
   if (!validateName(name)) {
     return ["name is not correct. example:test"];
   }

@@ -21,7 +21,7 @@ export interface BucketManager {
 
 export type Options = OssOptions & {
   distPath: string;
-  projectPrefix:string
+  ossPrefix:string
   distFilterOptions: Record<string, any>;
   packageJsonPath: string;
   ossConfigPath: string;

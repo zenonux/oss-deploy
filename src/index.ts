@@ -4,11 +4,12 @@ import { validateUploadOptions } from "./util";
 import compareVersions from "compare-versions";
 
 export const generatePrefix = (
+  ossPrefix: string,
   name: string,
   mode: ModeType,
   version: string
 ): string => {
-  return name + "/" + mode + "@" + version + "/";
+  return ossPrefix + "/" + name + "/" + mode + "@" + version + "/";
 };
 
 export default class OssDeploy {
@@ -25,19 +26,19 @@ export default class OssDeploy {
   }
 
   async uploadAssets(
-    projectPrefix = "",
+    ossPrefix = "",
     name: string,
     mode: ModeType,
     version: string,
     isForce: boolean
   ): Promise<void> {
-    const [err] = validateUploadOptions(name, mode, version);
+    const [err] = validateUploadOptions(ossPrefix,name, mode, version);
     if (err) {
       throw new Error(err);
     }
-    const prefix = this._buildPrefix(projectPrefix, name, mode, version);
+    const prefix = generatePrefix(ossPrefix, name, mode, version);
     this._versions = await this._oss.listRemoteDirectory(
-      projectPrefix + name + "/"
+      ossPrefix + name + "/"
     );
     if (
       !isForce &&
@@ -55,15 +56,11 @@ export default class OssDeploy {
     );
     this._versions.push(prefix);
     console.info(`upload ${prefix} success.`);
-    await this._clearAssets(projectPrefix, name, mode);
+    await this._clearAssets(ossPrefix, name, mode);
   }
 
-  private async _clearAssets(
-    projectPrefix: string,
-    name: string,
-    mode: ModeType
-  ) {
-    const list = this._getNeedClearVersionList(projectPrefix, name, mode);
+  private async _clearAssets(ossPrefix: string, name: string, mode: ModeType) {
+    const list = this._getNeedClearVersionList(ossPrefix, name, mode);
     if (list.length <= 0) {
       return;
     }
@@ -75,7 +72,7 @@ export default class OssDeploy {
   }
 
   private _getNeedClearVersionList(
-    projectPrefix: string,
+    ossPrefix: string,
     name: string,
     mode: ModeType
   ) {
@@ -93,19 +90,10 @@ export default class OssDeploy {
       const sorted = versions.sort((a, b) => compareVersions(b, a));
       const needClearList = sorted.slice(5);
       return needClearList.map((v) =>
-        this._buildPrefix(projectPrefix, name, mode, v)
+        generatePrefix(ossPrefix, name, mode, v)
       );
     }
     return [];
-  }
-
-  private _buildPrefix(
-    projectPrefix: string,
-    name: string,
-    mode: ModeType,
-    version: string
-  ) {
-    return projectPrefix + generatePrefix(name, mode, version);
   }
 
   private _validateOptions(opts: Options): Options {
