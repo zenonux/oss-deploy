@@ -17,7 +17,7 @@ npm i @urcloud/oss-deploy -D
 
 ## Usage
 
-1. create `deploy.config.json` on the root of the project
+1. create `deploy.config.json` at the root of the project
 
 ```json
 {
