@@ -54,9 +54,9 @@ npm i @urcloud/oss-deploy -D
 ## Changelog
 
 v1.5.6
-- add `ossPrefix` in config
-- export `generatePrefix` function
-- `mode` add `test`
+- add `ossPrefix` in config.
+- export `generatePrefix` function.
+- `mode` add `test`.
   
 v1.4.1
 - Support concurrent upload 3 files.
