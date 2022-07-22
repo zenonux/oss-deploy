@@ -13,5 +13,5 @@ jobs:
       - name: test and report upload
         run: |
           npm install
-          npm test:coverage
+          npm run test:coverage
           npx codecov -t ${{secrets.CODECOV_KEY}}
