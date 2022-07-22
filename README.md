@@ -45,7 +45,8 @@ npm i @urcloud/oss-deploy -D
 ```json
 {
   "scripts": {
-    "deploy:stag": "oss-deploy upload stag --force",
+    "deploy:test": "oss-deploy upload test --force",
+    "deploy:stag": "oss-deploy upload stag",
     "deploy:prod": "oss-deploy upload prod"
   }
 }
