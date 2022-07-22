@@ -54,12 +54,12 @@ npm i @urcloud/oss-deploy -D
 ## Changelog
 
 v1.5.6
-- 配置文件支持`ossPrefix`前缀
-- export`generatePrefix`函数
-- `mode` 支持 `test`
+- add `ossPrefix` in config
+- export `generatePrefix` function
+- `mode` add `test`
   
 v1.4.1
-- 默认并发3个文件上传
+- Support concurrent upload 3 files.
   
 v1.3.7
-- fix ossConfigPath bug
+- Fix ossConfigPath bug.
