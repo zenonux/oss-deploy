@@ -1,5 +1,5 @@
 # oss-deploy
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/zenonux/oss-deploy/master.svg?style=flat-square)](https://codecov.io/gh/zenonux/oss-deploy/)
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/zenonux/oss-deploy/master.svg?style=flat-square)](https://codecov.io/gh/zenonux/oss-deploy?branch=master)
 
 Cli tool for deploy assets to tencent cos.
 
