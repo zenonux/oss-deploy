@@ -137,6 +137,15 @@ var readJsonFile = (file, root) => {
   const filePath = import_path2.default.resolve(root || process.cwd(), file);
   return JSON.parse(import_fs2.default.readFileSync(filePath, "utf-8"));
 };
+var validateOssPrefix = (ossPrefix) => {
+  if (ossPrefix.indexOf("/") !== -1) {
+    return false;
+  }
+  if (ossPrefix.indexOf("@") !== -1) {
+    return false;
+  }
+  return true;
+};
 var validateName = (name) => {
   if (!name) {
     return false;
@@ -153,7 +162,7 @@ var validateMode = (mode) => {
   if (!mode) {
     return false;
   }
-  if (mode !== "prod" && mode != "stag") {
+  if (mode !== "prod" && mode != "stag" && mode != "test") {
     return false;
   }
   return true;
@@ -169,7 +178,7 @@ var validateVersion = (version) => {
   return true;
 };
 var validateUploadOptions = (ossPrefix, name, mode, version) => {
-  if (!validateName(ossPrefix)) {
+  if (!validateOssPrefix(ossPrefix)) {
     return ["ossPrefix is not correct. example:hello-world"];
   }
   if (!validateName(name)) {

@@ -10,6 +10,16 @@ export const readJsonFile = (
   return JSON.parse(fs.readFileSync(filePath, "utf-8"));
 };
 
+const validateOssPrefix = (ossPrefix: string) => {
+  if (ossPrefix.indexOf("/") !== -1) {
+    return false;
+  }
+  if (ossPrefix.indexOf("@") !== -1) {
+    return false;
+  }
+  return true;
+};
+
 const validateName = (name: string) => {
   if (!name) {
     return false;
@@ -27,7 +37,7 @@ const validateMode = (mode: ModeType) => {
   if (!mode) {
     return false;
   }
-  if (mode !== "prod" && mode != "stag") {
+  if (mode !== "prod" && mode != "stag" && mode != "test") {
     return false;
   }
   return true;
@@ -50,7 +60,7 @@ export const validateUploadOptions = (
   mode: ModeType,
   version: string
 ): (string | null)[] => {
-  if (!validateName(ossPrefix)) {
+  if (!validateOssPrefix(ossPrefix)) {
     return ["ossPrefix is not correct. example:hello-world"];
   }
   if (!validateName(name)) {

@@ -5,7 +5,7 @@ Cli tool for deploy assets to tencent cos.
 ## How it works
 
 1. Read `name`,`version` fields from local package.json.
-2. Check `${ossPrefix}name`/`mode`@`version` whether exists on tencent cos.
+2. Check `ossPrefix/name/mode@version` whether exists on tencent cos.
 3. Upload local assets from `distPath`.
 4. Clear unused asests on tencent cos(keep only recent 5 versions of each mode).
 
@@ -22,10 +22,10 @@ npm i @urcloud/oss-deploy -D
 ```json
 {
   "distPath": "./dist",
-  "ossPrefix":"",
   "distFilterOptions": {},
-  "packageJsonPath": "./package.json",
-  "ossConfigPath": "./oss-config.json"
+  "ossPrefix":"",
+  "ossConfigPath": "./oss-config.json",
+  "packageJsonPath": "./package.json"
 }
 ```
 
@@ -53,10 +53,11 @@ npm i @urcloud/oss-deploy -D
 
 ## Changelog
 
-v1.5.5
+v1.5.6
 - 配置文件支持`ossPrefix`前缀
 - export`generatePrefix`函数
-
+- `mode` 支持 `test`
+  
 v1.4.1
 - 默认并发3个文件上传
   

@@ -1,4 +1,4 @@
-declare type ModeType = "stag" | "prod";
+declare type ModeType = "test" | "stag" | "prod";
 declare type OssOptions = {
     Region: string;
     SecretId: string;
@@ -7,10 +7,10 @@ declare type OssOptions = {
 };
 declare type Options = OssOptions & {
     distPath: string;
-    ossPrefix: string;
     distFilterOptions: Record<string, any>;
-    packageJsonPath: string;
+    ossPrefix: string;
     ossConfigPath: string;
+    packageJsonPath: string;
 };
 
 declare const generatePrefix: (ossPrefix: string, name: string, mode: ModeType, version: string) => string;

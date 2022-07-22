@@ -1,4 +1,4 @@
-export type ModeType = "stag" | "prod";
+export type ModeType = "test" | "stag" | "prod";
 
 export type OssOptions = {
   Region: string;
@@ -21,8 +21,8 @@ export interface BucketManager {
 
 export type Options = OssOptions & {
   distPath: string;
-  ossPrefix:string
   distFilterOptions: Record<string, any>;
-  packageJsonPath: string;
+  ossPrefix: string;
   ossConfigPath: string;
+  packageJsonPath: string;
 };

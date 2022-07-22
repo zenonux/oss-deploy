@@ -128,6 +128,15 @@ var BucketManagerFactory = class {
 };
 
 // src/util.ts
+var validateOssPrefix = (ossPrefix) => {
+  if (ossPrefix.indexOf("/") !== -1) {
+    return false;
+  }
+  if (ossPrefix.indexOf("@") !== -1) {
+    return false;
+  }
+  return true;
+};
 var validateName = (name) => {
   if (!name) {
     return false;
@@ -144,7 +153,7 @@ var validateMode = (mode) => {
   if (!mode) {
     return false;
   }
-  if (mode !== "prod" && mode != "stag") {
+  if (mode !== "prod" && mode != "stag" && mode != "test") {
     return false;
   }
   return true;
@@ -160,7 +169,7 @@ var validateVersion = (version) => {
   return true;
 };
 var validateUploadOptions = (ossPrefix, name, mode, version) => {
-  if (!validateName(ossPrefix)) {
+  if (!validateOssPrefix(ossPrefix)) {
     return ["ossPrefix is not correct. example:hello-world"];
   }
   if (!validateName(name)) {
