@@ -1,12 +1,10 @@
 # oss-deploy
 
 [![NPM version][npm-image]][npm-url]
-[![coverage][cov-image]][cov-url]
 
 [npm-image]: https://img.shields.io/npm/v/@urcloud/oss-deploy.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/@urcloud/oss-deploy
-[cov-image]: http://codecov.io/github/zenonux/oss-deploy/coverage.svg?branch=master
-[cov-url]: http://codecov.io/github/zenonux/oss-deploy?branch=master
+
 
 
 
