@@ -1,10 +1,13 @@
 # oss-deploy
 
 [![NPM version][npm-image]][npm-url]
+[![build status][travis-image]][travis-url]
 [![coverage][cov-image]][cov-url]
 
 [npm-image]: https://img.shields.io/npm/v/@urcloud/oss-deploy.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/@urcloud/oss-deploy
+[travis-image]: https://img.shields.io/travis/zenonux/oss-deploy/master.svg?style=flat-square
+[travis-url]: https://travis-ci.org/zenonux/oss-deploy.svg?branch=master
 [cov-image]: http://codecov.io/github/zenonux/oss-deploy/coverage.svg?branch=master
 [cov-url]: http://codecov.io/github/zenonux/oss-deploy?branch=master
 
