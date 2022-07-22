@@ -10,7 +10,6 @@ declare type Options = OssOptions & {
     distFilterOptions: Record<string, any>;
     ossPrefix: string;
     ossConfigPath: string;
-    packageJsonPath: string;
 };
 
 declare const generatePrefix: (ossPrefix: string, name: string, mode: ModeType, version: string) => string;

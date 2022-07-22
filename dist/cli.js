@@ -258,19 +258,19 @@ var OssDeploy = class {
 // src/cli.ts
 var import_path3 = __toESM(require("path"));
 var program = new import_commander.Command();
-program.command("upload <mode>").option("-f, --force").requiredOption("-c, --config <file>", "deploy config file", "./deploy.config.json").description("upload assets to cos").action(async (mode, opts) => {
+program.command("upload <mode>").option("-f, --force").requiredOption("-c, --config <file>", "deploy config file", "./package.json").description("upload assets to cos").action(async (mode, opts) => {
   try {
-    const config = readJsonFile(opts.config);
+    const deployConfig = readJsonFile(opts.config);
     const isForce = opts.force;
     const rootPath = import_path3.default.dirname(opts.config);
-    const ossConfig = readJsonFile(config.ossConfigPath, rootPath);
+    const ossDeployConfig = deployConfig.ossDeploy;
+    const ossConfig = readJsonFile(ossDeployConfig.ossConfigPath, rootPath);
     const options = __spreadValues({
-      distPath: import_path3.default.resolve(rootPath, config.distPath),
-      distFilterOptions: config.distFilterOptions
+      distPath: import_path3.default.resolve(rootPath, ossDeployConfig.distPath),
+      distFilterOptions: ossDeployConfig.distFilterOptions
     }, ossConfig);
     const client = new OssDeploy(options);
-    const { name, version } = readJsonFile(config.packageJsonPath, rootPath);
-    await client.uploadAssets(config.ossPrefix, name, mode, version, isForce);
+    await client.uploadAssets(ossDeployConfig.ossPrefix, deployConfig.name, mode, deployConfig.version, isForce);
   } catch (e) {
     console.error(e);
     process.exit(1);

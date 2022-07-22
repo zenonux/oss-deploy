@@ -4,7 +4,7 @@ Cli tool for deploy assets to tencent cos.
 
 ## How it works
 
-1. Read `name`,`version` fields from local package.json.
+1. Read `name`,`version`,`ossDeploy` fields from local package.json.
 2. Check `ossPrefix/name/mode@version` whether exists on tencent cos.
 3. Upload local assets from `distPath`.
 4. Clear unused asests on tencent cos(keep only recent 5 versions of each mode).
@@ -17,15 +17,16 @@ npm i @urcloud/oss-deploy -D
 
 ## Usage
 
-1. create `deploy.config.json` at the root of the project
+1. add `ossDeploy` field in `package.json`
 
 ```json
 {
-  "distPath": "./dist",
-  "distFilterOptions": {},
-  "ossPrefix":"",
-  "ossConfigPath": "./oss-config.json",
-  "packageJsonPath": "./package.json"
+  "ossDeploy": {
+    "distPath": "./dist",
+    "distFilterOptions": {},
+    "ossPrefix": "",
+    "ossConfigPath": "./oss-config.json",
+  }
 }
 ```
 
@@ -47,20 +48,27 @@ npm i @urcloud/oss-deploy -D
   "scripts": {
     "deploy:test": "oss-deploy upload test --force",
     "deploy:stag": "oss-deploy upload stag",
-    "deploy:prod": "oss-deploy upload prod"
+    "deploy:prod": "oss-deploy upload prod -c ./deploy.config.json"
   }
 }
 ```
 
 ## Changelog
 
+v1.6.0
+
+- Support `ossDeploy` field in `package.json`.
+
 v1.5.6
+
 - Add `ossPrefix` in config.
 - Export `generatePrefix` function.
 - `mode` add `test` type.
-  
+
 v1.4.1
+
 - Support concurrent upload 3 files.
-  
+
 v1.3.7
+
 - Fix ossConfigPath bug.

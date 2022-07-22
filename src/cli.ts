@@ -13,26 +13,24 @@ program
   .requiredOption(
     "-c, --config <file>",
     "deploy config file",
-    "./deploy.config.json"
+    "./package.json"
   )
   .description("upload assets to cos")
   .action(async (mode: ModeType, opts: any) => {
     try {
-      const config = readJsonFile(opts.config);
+      const deployConfig = readJsonFile(opts.config);
       const isForce = opts.force;
       const rootPath = path.dirname(opts.config);
-      const ossConfig = readJsonFile(config.ossConfigPath, rootPath);
+      const ossDeployConfig=deployConfig.ossDeploy
+
+      const ossConfig = readJsonFile(ossDeployConfig.ossConfigPath, rootPath);
       const options = {
-        distPath: path.resolve(rootPath, config.distPath),
-        distFilterOptions: config.distFilterOptions,
+        distPath: path.resolve(rootPath, ossDeployConfig.distPath),
+        distFilterOptions: ossDeployConfig.distFilterOptions,
         ...ossConfig,
       };
       const client = new OssDeploy(options as Options);
-      const { name, version } = readJsonFile(
-        config.packageJsonPath,
-        rootPath
-      );
-      await client.uploadAssets(config.ossPrefix, name, mode, version, isForce);
+      await client.uploadAssets(ossDeployConfig.ossPrefix, deployConfig.name, mode, deployConfig.version, isForce);
     } catch (e) {
       console.error(e);
       process.exit(1);

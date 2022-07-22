@@ -24,5 +24,4 @@ export type Options = OssOptions & {
   distFilterOptions: Record<string, any>;
   ossPrefix: string;
   ossConfigPath: string;
-  packageJsonPath: string;
 };
