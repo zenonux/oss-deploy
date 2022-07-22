@@ -3,17 +3,19 @@ import { promisify } from "util";
 import path from "path";
 const execPromise = promisify(exec);
 
-describe("cli", () => {
+const cli = (argv: string) => {
+  return execPromise(
+    `node ${path.resolve(__dirname, "../dist/cli.js")} ${argv}`
+  )
+    .then((data) => [null, data])
+    .catch((e) => [e.stderr]);
+};
 
-  it("should upload oss-deploy/test/stag@1.0.0", async () => {
-    try {
-      await execPromise(
-        `node ${path.resolve(__dirname, "../dist/cli.js")} upload stag -c ./deploy.config.json`
-      );
-    } catch (err) {
-      expect((err as any).stderr).toContain(
-        "stag@1.0.0 of test has already exist,please check your version!"
-      );
-    }
+describe("cli", () => {
+  it("should upload oss-deploy/test/stag@1.0.0 fail", async () => {
+    const [err] = await cli("upload stag -c ./deploy.config.json");
+    expect(err).toContain(
+      "stag@1.0.0 of test has already exist,please check your version!"
+    );
   });
 });
