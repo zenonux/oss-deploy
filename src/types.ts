@@ -1,12 +1,5 @@
 export type ModeType = "test" | "stag" | "prod";
 
-export type OssOptions = {
-  Region: string;
-  SecretId: string;
-  SecretKey: string;
-  Bucket: string;
-};
-
 export interface BucketManager {
   uploadLocalFile(name: string, filePath: string): Promise<any>;
   uploadLocalDirectory(
@@ -19,9 +12,14 @@ export interface BucketManager {
   clearRemoteDirectory(prefix: string): Promise<void>;
 }
 
+export type OssOptions = {
+  Region: string;
+  SecretId: string;
+  SecretKey: string;
+  Bucket: string;
+};
+
 export type Options = OssOptions & {
   distPath: string;
   distFilterOptions: Record<string, any>;
-  ossPrefix: string;
-  ossConfigPath: string;
 };

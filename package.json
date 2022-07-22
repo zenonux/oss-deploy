@@ -1,6 +1,6 @@
 {
   "name": "@urcloud/oss-deploy",
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Deploy static assests to tencent cos.",
   "bin": {
     "oss-deploy": "dist/cli.js"
@@ -11,7 +11,8 @@
   },
   "scripts": {
     "build": "tsup src/index.ts src/cli.ts --format cjs --dts",
-    "test": "jest"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "author": "换个头像心好累",
   "license": "MIT",

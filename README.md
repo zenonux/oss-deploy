@@ -1,4 +1,5 @@
 # oss-deploy
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/zenonux/oss-deploy/master.svg?style=flat-square)](https://codecov.io/gh/zenonux/oss-deploy/)
 
 Cli tool for deploy assets to tencent cos.
 
@@ -55,9 +56,10 @@ npm i @urcloud/oss-deploy -D
 
 ## Changelog
 
-v1.6.0
+v1.6.1
 
 - Support `ossDeploy` field in `package.json`.
+- add code test coverage.
 
 v1.5.6
 

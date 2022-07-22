@@ -12,10 +12,12 @@ const cli = (argv: string) => {
 };
 
 describe("cli", () => {
+
   it("should upload oss-deploy/test/stag@1.0.0 fail", async () => {
     const [err] = await cli("upload stag -c ./deploy.config.json");
     expect(err).toContain(
       "stag@1.0.0 of test has already exist,please check your version!"
     );
   });
+
 });

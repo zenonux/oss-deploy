@@ -1,4 +1,5 @@
 node_modules/
+coverage/
 
 deploy.config.json
 oss-config.json
